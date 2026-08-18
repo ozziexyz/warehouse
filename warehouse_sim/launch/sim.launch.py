@@ -1,15 +1,26 @@
 import os
 
+import xacro
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, RegisterEventHandler
+from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch_ros.actions import Node
+
 
 def generate_launch_description():
     pkg_warehouse_sim = get_package_share_directory('warehouse_sim')
     pkg_ros_gz_sim = get_package_share_directory('ros_gz_sim')
 
     world_path = os.path.join(pkg_warehouse_sim, 'worlds', 'warehouse.sdf')
+    xacro_path = os.path.join(pkg_warehouse_sim, 'urdf', 'warehouse_robot.urdf.xacro')
+    controller_config_path = os.path.join(pkg_warehouse_sim, 'config', 'diff_drive_controller.yaml')
+
+    robot_description_content = xacro.process_file(
+        xacro_path,
+        mappings={'controller_config_path': controller_config_path},
+    ).toxml()
 
     gz_sim = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -18,4 +29,63 @@ def generate_launch_description():
         launch_arguments={'gz_args': f'-r {world_path}'}.items(),
     )
 
-    return LaunchDescription([gz_sim])
+    clock_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=['/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock'],
+        output='screen',
+    )
+
+    robot_state_publisher = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        output='screen',
+        parameters=[{
+            'robot_description': robot_description_content,
+            'use_sim_time': True,
+        }],
+    )
+
+    spawn_robot = Node(
+        package='ros_gz_sim',
+        executable='create',
+        arguments=['-topic', 'robot_description', '-name', 'warehouse_robot', '-z', '0.1'],
+        output='screen',
+    )
+
+    joint_state_broadcaster_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['joint_state_broadcaster'],
+        output='screen',
+    )
+
+    diff_drive_controller_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['diff_drive_controller'],
+        output='screen',
+    )
+
+    delayed_joint_state_broadcaster_spawner = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=spawn_robot,
+            on_exit=[joint_state_broadcaster_spawner],
+        )
+    )
+
+    delayed_diff_drive_controller_spawner = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=joint_state_broadcaster_spawner,
+            on_exit=[diff_drive_controller_spawner],
+        )
+    )
+
+    return LaunchDescription([
+        gz_sim,
+        clock_bridge,
+        robot_state_publisher,
+        spawn_robot,
+        delayed_joint_state_broadcaster_spawner,
+        delayed_diff_drive_controller_spawner,
+    ])

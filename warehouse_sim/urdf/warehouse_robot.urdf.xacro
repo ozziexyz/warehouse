@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<robot name="warehouse_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Absolute path to the controller manager config, supplied by the launch file -->
+  <xacro:arg name="controller_config_path" default=""/>
+
+  <!-- Chassis -->
+  <xacro:property name="base_length" value="0.4"/>
+  <xacro:property name="base_width" value="0.4"/>
+  <xacro:property name="base_height" value="0.12"/>
+  <xacro:property name="base_mass" value="8.0"/>
+
+  <!-- Drive wheels -->
+  <xacro:property name="wheel_radius" value="0.05"/>
+  <xacro:property name="wheel_width" value="0.03"/>
+  <xacro:property name="wheel_mass" value="0.5"/>
+
+  <!-- Caster wheels -->
+  <xacro:property name="caster_radius" value="0.025"/>
+  <xacro:property name="caster_mass" value="0.1"/>
+
+  <!-- Derived placement offsets -->
+  <xacro:property name="ground_clearance" value="0.02"/>
+  <xacro:property name="base_z" value="${wheel_radius + ground_clearance}"/>
+  <xacro:property name="wheel_z_offset" value="${wheel_radius - base_z}"/>
+  <xacro:property name="caster_z_offset" value="${caster_radius - base_z}"/>
+  <xacro:property name="caster_x_offset" value="${base_length / 2 - caster_radius - 0.02}"/>
+
+  <material name="body_gray">
+    <color rgba="0.3 0.3 0.3 1.0"/>
+  </material>
+  <material name="wheel_black">
+    <color rgba="0.1 0.1 0.1 1.0"/>
+  </material>
+  <material name="caster_silver">
+    <color rgba="0.7 0.7 0.7 1.0"/>
+  </material>
+
+  <!-- base_footprint sits on the ground and is the robot's control/odometry origin -->
+  <link name="base_footprint"/>
+
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 ${base_z}" rpy="0 0 0"/>
+  </joint>
+
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="${base_length} ${base_width} ${base_height}"/>
+      </geometry>
+      <material name="body_gray"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${base_length} ${base_width} ${base_height}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${base_mass}"/>
+      <inertia
+        ixx="${base_mass / 12.0 * (base_width*base_width + base_height*base_height)}" ixy="0" ixz="0"
+        iyy="${base_mass / 12.0 * (base_length*base_length + base_height*base_height)}" iyz="0"
+        izz="${base_mass / 12.0 * (base_length*base_length + base_width*base_width)}"/>
+    </inertial>
+  </link>
+
+  <!-- Driven wheel: mounted on the left/right sides, midway along the chassis -->
+  <xacro:macro name="drive_wheel" params="prefix reflect">
+    <link name="${prefix}_wheel_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+        </geometry>
+        <material name="wheel_black"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="${wheel_mass}"/>
+        <inertia
+          ixx="${wheel_mass / 12.0 * (3*wheel_radius*wheel_radius + wheel_width*wheel_width)}" ixy="0" ixz="0"
+          iyy="${wheel_mass / 12.0 * (3*wheel_radius*wheel_radius + wheel_width*wheel_width)}" iyz="0"
+          izz="${wheel_mass / 2.0 * wheel_radius*wheel_radius}"/>
+      </inertial>
+    </link>
+
+    <joint name="${prefix}_wheel_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="${prefix}_wheel_link"/>
+      <origin xyz="0 ${reflect * (base_width/2 + wheel_width/2)} ${wheel_z_offset}" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+    </joint>
+
+    <gazebo reference="${prefix}_wheel_link">
+      <material>Gazebo/Black</material>
+    </gazebo>
+  </xacro:macro>
+
+  <xacro:drive_wheel prefix="left" reflect="1"/>
+  <xacro:drive_wheel prefix="right" reflect="-1"/>
+
+  <!-- Caster wheel: unpowered, frictionless sphere for front/back support -->
+  <xacro:macro name="caster_wheel" params="prefix x_offset">
+    <link name="${prefix}_caster_link">
+      <visual>
+        <geometry>
+          <sphere radius="${caster_radius}"/>
+        </geometry>
+        <material name="caster_silver"/>
+      </visual>
+      <collision>
+        <geometry>
+          <sphere radius="${caster_radius}"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="${caster_mass}"/>
+        <inertia
+          ixx="${2.0/5.0 * caster_mass * caster_radius*caster_radius}" ixy="0" ixz="0"
+          iyy="${2.0/5.0 * caster_mass * caster_radius*caster_radius}" iyz="0"
+          izz="${2.0/5.0 * caster_mass * caster_radius*caster_radius}"/>
+      </inertial>
+    </link>
+
+    <joint name="${prefix}_caster_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="${prefix}_caster_link"/>
+      <origin xyz="${x_offset} 0 ${caster_z_offset}" rpy="0 0 0"/>
+    </joint>
+
+    <gazebo reference="${prefix}_caster_link">
+      <material>Gazebo/DarkGrey</material>
+      <mu1>0.0</mu1>
+      <mu2>0.0</mu2>
+    </gazebo>
+  </xacro:macro>
+
+  <xacro:caster_wheel prefix="front" x_offset="${caster_x_offset}"/>
+  <xacro:caster_wheel prefix="back" x_offset="${-caster_x_offset}"/>
+
+  <!-- ros2_control: only the two driven wheels are actuated -->
+  <ros2_control name="warehouse_robot_system" type="system">
+    <hardware>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+    </hardware>
+    <joint name="left_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="right_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+
+  <gazebo>
+    <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+      <parameters>$(arg controller_config_path)</parameters>
+    </plugin>
+  </gazebo>
+
+</robot>
