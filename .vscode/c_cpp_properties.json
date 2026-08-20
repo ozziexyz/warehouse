@@ -1,0 +1,19 @@
+{
+  "configurations": [
+    {
+      "name": "ROS2 Jazzy",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "/opt/ros/jazzy/include/**",
+        "${workspaceFolder}/../../install/**/include/**",
+        "${workspaceFolder}/../../install/warehouse_interfaces/include/warehouse_interfaces/**"
+      ],
+      "defines": [],
+      "compilerPath": "/usr/bin/g++",
+      "cStandard": "c17",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "linux-gcc-x64"
+    }
+  ],
+  "version": 4
+}
