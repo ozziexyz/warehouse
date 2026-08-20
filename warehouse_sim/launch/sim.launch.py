@@ -3,9 +3,11 @@ import os
 import xacro
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, RegisterEventHandler
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, RegisterEventHandler
+from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 
@@ -16,11 +18,18 @@ def generate_launch_description():
     world_path = os.path.join(pkg_warehouse_sim, 'worlds', 'warehouse.sdf')
     xacro_path = os.path.join(pkg_warehouse_sim, 'urdf', 'warehouse_robot.urdf.xacro')
     controller_config_path = os.path.join(pkg_warehouse_sim, 'config', 'diff_drive_controller.yaml')
+    rviz_config_path = os.path.join(pkg_warehouse_sim, 'rviz', 'warehouse_sim.rviz')
 
     robot_description_content = xacro.process_file(
         xacro_path,
         mappings={'controller_config_path': controller_config_path},
     ).toxml()
+
+    use_rviz_arg = DeclareLaunchArgument(
+        'use_rviz',
+        default_value='true',
+        description='Launch RViz alongside the simulation',
+    )
 
     gz_sim = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -67,6 +76,15 @@ def generate_launch_description():
         output='screen',
     )
 
+    rviz = Node(
+        package='rviz2',
+        executable='rviz2',
+        arguments=['-d', rviz_config_path],
+        parameters=[{'use_sim_time': True}],
+        condition=IfCondition(LaunchConfiguration('use_rviz')),
+        output='screen',
+    )
+
     delayed_joint_state_broadcaster_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=spawn_robot,
@@ -82,10 +100,12 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        use_rviz_arg,
         gz_sim,
         clock_bridge,
         robot_state_publisher,
         spawn_robot,
         delayed_joint_state_broadcaster_spawner,
         delayed_diff_drive_controller_spawner,
+        rviz,
     ])
