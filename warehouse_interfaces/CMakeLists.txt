@@ -12,6 +12,8 @@ find_package(nav_msgs REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "action/FollowPath.action"
+  "msg/RobotState.msg"
+  "srv/SetRobotState.srv"
   DEPENDENCIES nav_msgs
 )
 

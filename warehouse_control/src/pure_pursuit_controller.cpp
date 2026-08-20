@@ -12,6 +12,7 @@
 #include <tf2_ros/transform_listener.hpp>
 
 #include <warehouse_interfaces/action/follow_path.hpp>
+#include <warehouse_interfaces/msg/robot_state.hpp>
 
 using namespace warehouse_interfaces::action;
 
@@ -21,17 +22,18 @@ class PurePursuitController : public rclcpp::Node {
         using GoalHandleFollowPath = rclcpp_action::ServerGoalHandle<FollowPath>;
 
         PurePursuitController() : Node("pure_pursuit_controller") {
+            RCLCPP_INFO(get_logger(), "pure_pursuit_controller node started");
+
             declare_parameter<double>("lookahead_distance", 1.0);
             lookahead_distance = get_parameter("lookahead_distance").as_double();
 
-            sub_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
-            action_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
-
-            rclcpp::SubscriptionOptions sub_options;
-            sub_options.callback_group = sub_group;
-
             tf_buffer = std::make_unique<tf2_ros::Buffer>(this->get_clock());
             tf_listener = std::make_shared<tf2_ros::TransformListener>(*tf_buffer);
+
+            sub_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+            action_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+            rclcpp::SubscriptionOptions sub_options;
+            sub_options.callback_group = sub_group;
 
             odom_sub = create_subscription<nav_msgs::msg::Odometry>(
                 "/diff_drive_controller/odom",
@@ -39,20 +41,16 @@ class PurePursuitController : public rclcpp::Node {
                 std::bind(&PurePursuitController::odom_callback, this, std::placeholders::_1),
                 sub_options
             );
-
             action_server = rclcpp_action::create_server<FollowPath>(
                 this,
-                "follow_path",
+                "/follow_path",
                 std::bind(&PurePursuitController::handle_goal, this, std::placeholders::_1, std::placeholders::_2),
                 std::bind(&PurePursuitController::handle_cancel, this, std::placeholders::_1),
                 std::bind(&PurePursuitController::handle_accepted, this, std::placeholders::_1),
                 rcl_action_server_get_default_options(),
                 action_group
             );
-
             cmd_vel_pub = create_publisher<geometry_msgs::msg::TwistStamped>("/diff_drive_controller/cmd_vel", 10);
-
-            RCLCPP_INFO(get_logger(), "pure_pursuit_controller node started");
         }
 
     private:

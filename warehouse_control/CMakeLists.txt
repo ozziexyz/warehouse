@@ -18,8 +18,16 @@ find_package(warehouse_interfaces REQUIRED)
 add_executable(pure_pursuit_controller src/pure_pursuit_controller.cpp)
 ament_target_dependencies(pure_pursuit_controller rclcpp rclcpp_action nav_msgs geometry_msgs tf2 tf2_ros warehouse_interfaces)
 
+add_executable(navigation_manager src/navigation_manager.cpp)
+ament_target_dependencies(navigation_manager rclcpp rclcpp_action geometry_msgs warehouse_interfaces)
+
+add_executable(state_manager src/state_manager.cpp)
+ament_target_dependencies(state_manager rclcpp warehouse_interfaces)
+
 install(TARGETS
   pure_pursuit_controller
+  navigation_manager
+  state_manager
   DESTINATION lib/${PROJECT_NAME}
 )
 
