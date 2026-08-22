@@ -7,7 +7,7 @@ from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, Regi
 from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
 
 
@@ -31,11 +31,21 @@ def generate_launch_description():
         description='Launch RViz alongside the simulation',
     )
 
+    headless_arg = DeclareLaunchArgument(
+        'headless',
+        default_value='false',
+        description='Run Gazebo without the GUI client',
+    )
+
+    gz_args = PythonExpression([
+        "'-s -r ' if '", LaunchConfiguration('headless'), "' == 'true' else '-r '"
+    ])
+
     gz_sim = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py')
         ),
-        launch_arguments={'gz_args': f'-r {world_path}'}.items(),
+        launch_arguments={'gz_args': [gz_args, world_path]}.items(),
     )
 
     clock_bridge = Node(
@@ -101,6 +111,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         use_rviz_arg,
+        headless_arg,
         gz_sim,
         clock_bridge,
         robot_state_publisher,
