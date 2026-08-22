@@ -26,6 +26,10 @@ class PurePursuitController : public rclcpp::Node {
 
             declare_parameter<double>("lookahead_distance", 1.0);
             lookahead_distance = get_parameter("lookahead_distance").as_double();
+            declare_parameter<double>("max_linear_velocity", 0.2);
+            linear_velocity = get_parameter("max_linear_velocity").as_double();
+            declare_parameter<double>("goal_tolerance", 0.1);
+            goal_tolerance = get_parameter("goal_tolerance").as_double();
 
             tf_buffer = std::make_unique<tf2_ros::Buffer>(this->get_clock());
             tf_listener = std::make_shared<tf2_ros::TransformListener>(*tf_buffer);
@@ -54,7 +58,7 @@ class PurePursuitController : public rclcpp::Node {
         }
 
     private:
-        void odom_callback(const nav_msgs::msg::Odometry & msg) {
+        void odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {
             std::lock_guard<std::mutex> lock(odom_mtx);
             odom = msg;
         }
@@ -85,6 +89,11 @@ class PurePursuitController : public rclcpp::Node {
             double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
             double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
             return atan2(siny_cosp, cosy_cosp);
+        }
+
+        nav_msgs::msg::Odometry::SharedPtr get_odom() {
+            std::lock_guard<std::mutex> lock(odom_mtx);
+            return odom;
         }
 
         geometry_msgs::msg::PoseStamped transform_pose(
@@ -121,7 +130,7 @@ class PurePursuitController : public rclcpp::Node {
                 nav_msgs::msg::Odometry current_odom;
                 {
                     std::lock_guard<std::mutex> lock(odom_mtx);
-                    current_odom = odom;
+                    current_odom = *odom;
                 }
 
                 geometry_msgs::msg::Point robot_pos = current_odom.pose.pose.position;
@@ -179,14 +188,15 @@ class PurePursuitController : public rclcpp::Node {
         rclcpp_action::Server<FollowPath>::SharedPtr action_server;
         rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr cmd_vel_pub;
         rclcpp::CallbackGroup::SharedPtr sub_group, action_group;
-        nav_msgs::msg::Odometry odom;
+        nav_msgs::msg::Odometry::SharedPtr odom;
         std::mutex odom_mtx;
         std::unique_ptr<tf2_ros::Buffer> tf_buffer;
         std::shared_ptr<tf2_ros::TransformListener> tf_listener;
         int target_index = 0;
         int last_index = 0;
         double lookahead_distance;
-        double linear_velocity = 0.2;
+        double linear_velocity;
+        double goal_tolerance;
 };
 
 int main(int argc, char ** argv) {
