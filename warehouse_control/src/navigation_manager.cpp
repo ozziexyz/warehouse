@@ -32,7 +32,7 @@ class NavigationManager : public rclcpp::Node {
             path_pub = create_publisher<nav_msgs::msg::Path>("/path", 10);
             robot_state_client = create_client<SetRobotState>("/robot_state/set", 10);
             controller_client = rclcpp_action::create_client<FollowPath>(this, "/follow_path");
-            timer = create_timer(0.1s, std::bind(&NavigationManager::timer_callback, this));
+            timer = create_timer(0.5s, std::bind(&NavigationManager::timer_callback, this));
 
             if (!robot_state_client->wait_for_service(1s)) {
                 RCLCPP_ERROR(this->get_logger(), "Robot state service service not available.");
@@ -47,7 +47,7 @@ class NavigationManager : public rclcpp::Node {
     private:
         void goal_sub_callback(const geometry_msgs::msg::PoseStamped & msg) {
             goal_pose = msg;
-            nav_msgs::msg::Path path = generate_path(goal_pose);
+            path = generate_path(goal_pose);
             FollowPath::Goal goal_msg;
             goal_msg.path = path;
 
@@ -59,7 +59,9 @@ class NavigationManager : public rclcpp::Node {
         }
 
         void timer_callback() {
-            
+            if(path.poses.size() > 0) {
+                path_pub->publish(path);
+            }
         }
 
         nav_msgs::msg::Path generate_path(geometry_msgs::msg::PoseStamped goal_waypoint) {
@@ -80,9 +82,9 @@ class NavigationManager : public rclcpp::Node {
             
             for(int i = 0; i < num_poses; i++) {
                 geometry_msgs::msg::PoseStamped waypoint;
-                waypoint.pose.position.x = (dx / (num_poses - i)) + robot_pose.position.x;
-                waypoint.pose.position.y = (dy / (num_poses - i)) + robot_pose.position.y;
-                RCLCPP_INFO(get_logger(), "x: %f, yy: %f", waypoint.pose.position.x, waypoint.pose.position.y);
+                waypoint.pose.position.x = i * (dx / (num_poses - 1)) + robot_pose.position.x;
+                waypoint.pose.position.y = i * (dy / (num_poses - 1)) + robot_pose.position.y;
+                // RCLCPP_INFO(get_logger(), "x: %f, y: %f", waypoint.pose.position.x, waypoint.pose.position.y);
                 path.poses.push_back(waypoint);
             }
 
@@ -97,6 +99,7 @@ class NavigationManager : public rclcpp::Node {
         rclcpp::Client<SetRobotState>::SharedPtr robot_state_client;
         rclcpp::TimerBase::SharedPtr timer;
         geometry_msgs::msg::PoseStamped goal_pose;
+        nav_msgs::msg::Path path;
         nav_msgs::msg::Odometry odom;
 };
 

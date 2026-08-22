@@ -117,6 +117,7 @@ class PurePursuitController : public rclcpp::Node {
 
             const auto goal = goal_handle->get_goal();
             const auto & waypoints = goal->path.poses;
+            target_index = 0;
 
             auto feedback = std::make_shared<FollowPath::Feedback>();
             auto result = std::make_shared<FollowPath::Result>();
@@ -138,11 +139,10 @@ class PurePursuitController : public rclcpp::Node {
                 geometry_msgs::msg::Quaternion robot_rot = current_odom->pose.pose.orientation;
                 geometry_msgs::msg::Point target;
             
-                for (int i = last_index; i < waypoints.size(); i++) {
+                for (int i = target_index; i < waypoints.size(); i++) {
                     double d_new = distance(waypoints[i].pose.position, robot_pos);
-                    double d_last = distance(waypoints[i].pose.position, waypoints[last_index].pose.position);
-                    if(d_new > lookahead_distance && d_new > d_last) {
-                        last_index = target_index;      
+                    if(d_new > lookahead_distance) {
+                        // RCLCPP_INFO(get_logger(), "d_new: %f", d_new);
                         target_index = i;
                         break;
                     }
@@ -159,7 +159,7 @@ class PurePursuitController : public rclcpp::Node {
 
                 double L_actual = sqrt(x_local * x_local + y_local * y_local);
                 double k = 2 * y_local / (L_actual * L_actual);
-                RCLCPP_INFO(get_logger(), "k: %f, dx: %f, dy: %f", k, dx, dy);
+                RCLCPP_INFO(get_logger(), "k: %f, dx: %f, dy: %f, L: %f, y_local: %f, target_index:: %d", k, dx, dy, L_actual, y_local, target_index);
 
                 goal_distance = distance(robot_pos, waypoints.back().pose.position);
                 feedback->waypoint_distance = distance(robot_pos, waypoints[target_index].pose.position);
@@ -195,7 +195,6 @@ class PurePursuitController : public rclcpp::Node {
         std::unique_ptr<tf2_ros::Buffer> tf_buffer;
         std::shared_ptr<tf2_ros::TransformListener> tf_listener;
         int target_index = 0;
-        int last_index = 0;
         double rate;
         double lookahead_distance;
         double linear_velocity;

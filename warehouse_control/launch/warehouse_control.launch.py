@@ -18,7 +18,7 @@ def generate_launch_description():
         name='pure_pursuit_controller',
         output='screen',
         parameters=[{
-            'lookahead_distance': 0.5,
+            'lookahead_distance': 0.35,
             'max_linear_velocity': 0.5,
             'goal_tolerance': 0.1,
             'loop_rate': 10.0
