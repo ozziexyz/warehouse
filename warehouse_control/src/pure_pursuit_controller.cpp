@@ -30,6 +30,8 @@ class PurePursuitController : public rclcpp::Node {
             linear_velocity = get_parameter("max_linear_velocity").as_double();
             declare_parameter<double>("goal_tolerance", 0.1);
             goal_tolerance = get_parameter("goal_tolerance").as_double();
+            declare_parameter<double>("loop_rate", 2.0);
+            rate = get_parameter("loop_rate").as_double();
 
             tf_buffer = std::make_unique<tf2_ros::Buffer>(this->get_clock());
             tf_listener = std::make_shared<tf2_ros::TransformListener>(*tf_buffer);
@@ -111,7 +113,7 @@ class PurePursuitController : public rclcpp::Node {
 
         void execute(const std::shared_ptr<GoalHandleFollowPath> goal_handle) {
             RCLCPP_INFO(get_logger(), "Executing goal");
-            rclcpp::Rate loop_rate(2);
+            rclcpp::Rate loop_rate(rate);
 
             const auto goal = goal_handle->get_goal();
             const auto & waypoints = goal->path.poses;
@@ -194,6 +196,7 @@ class PurePursuitController : public rclcpp::Node {
         std::shared_ptr<tf2_ros::TransformListener> tf_listener;
         int target_index = 0;
         int last_index = 0;
+        double rate;
         double lookahead_distance;
         double linear_velocity;
         double goal_tolerance;
