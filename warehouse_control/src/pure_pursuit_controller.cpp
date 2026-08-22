@@ -119,7 +119,10 @@ class PurePursuitController : public rclcpp::Node {
             auto feedback = std::make_shared<FollowPath::Feedback>();
             auto result = std::make_shared<FollowPath::Result>();
 
-            while(target_index <= waypoints.size() - 1) {
+            nav_msgs::msg::Odometry::SharedPtr current_odom = get_odom();
+            double goal_distance = distance(current_odom->pose.pose.position, waypoints.back().pose.position);
+
+            while(goal_distance > goal_tolerance) {
                 if (goal_handle->is_canceling()) {
                     result->success = false;
                     goal_handle->canceled(result);
@@ -127,14 +130,10 @@ class PurePursuitController : public rclcpp::Node {
                     return;
                 }
 
-                nav_msgs::msg::Odometry current_odom;
-                {
-                    std::lock_guard<std::mutex> lock(odom_mtx);
-                    current_odom = *odom;
-                }
+                current_odom = get_odom();
 
-                geometry_msgs::msg::Point robot_pos = current_odom.pose.pose.position;
-                geometry_msgs::msg::Quaternion robot_rot = current_odom.pose.pose.orientation;
+                geometry_msgs::msg::Point robot_pos = current_odom->pose.pose.position;
+                geometry_msgs::msg::Quaternion robot_rot = current_odom->pose.pose.orientation;
                 geometry_msgs::msg::Point target;
             
                 for (int i = last_index; i < waypoints.size(); i++) {
@@ -160,8 +159,9 @@ class PurePursuitController : public rclcpp::Node {
                 double k = 2 * y_local / (L_actual * L_actual);
                 RCLCPP_INFO(get_logger(), "k: %f, dx: %f, dy: %f", k, dx, dy);
 
+                goal_distance = distance(robot_pos, waypoints.back().pose.position);
                 feedback->waypoint_distance = distance(robot_pos, waypoints[target_index].pose.position);
-                feedback->goal_distance = distance(robot_pos, waypoints.back().pose.position);
+                feedback->goal_distance = goal_distance;
                 goal_handle->publish_feedback(feedback);
 
                 geometry_msgs::msg::TwistStamped cmd_vel;
