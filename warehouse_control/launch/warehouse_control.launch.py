@@ -17,6 +17,11 @@ def generate_launch_description():
         executable='pure_pursuit_controller',
         name='pure_pursuit_controller',
         output='screen',
+        parameters=[{
+            'lookahead_distance': 1.0,
+            'max_linear_velocity': 0.2,
+            'goal_tolerance': 0.1,
+        }],
     )
 
     navigation_manager_node = Node(
