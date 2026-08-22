@@ -86,6 +86,17 @@ def generate_launch_description():
         output='screen',
     )
 
+    obstacle_marker_publisher = Node(
+        package='warehouse_sim',
+        executable='obstacle_marker_publisher.py',
+        parameters=[{
+            'world_path': world_path,
+            'frame_id': 'odom',
+            'use_sim_time': True,
+        }],
+        output='screen',
+    )
+
     rviz = Node(
         package='rviz2',
         executable='rviz2',
@@ -118,5 +129,6 @@ def generate_launch_description():
         spawn_robot,
         delayed_joint_state_broadcaster_spawner,
         delayed_diff_drive_controller_spawner,
+        obstacle_marker_publisher,
         rviz,
     ])
