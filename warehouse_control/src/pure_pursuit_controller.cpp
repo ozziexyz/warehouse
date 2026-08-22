@@ -157,9 +157,11 @@ class PurePursuitController : public rclcpp::Node {
                 double x_local =  dx * cos(heading) + dy * sin(heading);
                 double y_local = -dx * sin(heading) + dy * cos(heading);
 
+                double target_heading = atan2(dx, dy);
+
                 double L_actual = sqrt(x_local * x_local + y_local * y_local);
                 double k = 2 * y_local / (L_actual * L_actual);
-                RCLCPP_INFO(get_logger(), "k: %f, dx: %f, dy: %f, L: %f, y_local: %f, target_index:: %d", k, dx, dy, L_actual, y_local, target_index);
+                RCLCPP_INFO(get_logger(), "k: %f, dx: %f, dy: %f, L: %f, y_local: %f, target_index: %d", k, dx, dy, L_actual, y_local, target_index);
 
                 goal_distance = distance(robot_pos, waypoints.back().pose.position);
                 feedback->waypoint_distance = distance(robot_pos, waypoints[target_index].pose.position);
@@ -167,8 +169,14 @@ class PurePursuitController : public rclcpp::Node {
                 goal_handle->publish_feedback(feedback);
 
                 geometry_msgs::msg::TwistStamped cmd_vel;
-                cmd_vel.twist.angular.z = linear_velocity * k;
-                cmd_vel.twist.linear.x = linear_velocity;
+
+                if(abs(target_heading - heading) > 3.14159) {
+                    cmd_vel.twist.linear.x = 0.0;
+                    cmd_vel.twist.angular.z = 0.5;
+                } else {
+                    cmd_vel.twist.linear.x = linear_velocity;
+                    cmd_vel.twist.angular.z = linear_velocity * k;
+                }
 
                 cmd_vel_pub->publish(cmd_vel);
 
