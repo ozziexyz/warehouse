@@ -21,7 +21,8 @@ def generate_launch_description():
             'lookahead_distance': 0.35,
             'max_linear_velocity': 0.5,
             'goal_tolerance': 0.1,
-            'loop_rate': 10.0
+            'loop_rate': 10.0,
+            'turn_in_place_w': 1.0
         }],
     )
 

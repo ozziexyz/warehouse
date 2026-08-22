@@ -27,11 +27,13 @@ class PurePursuitController : public rclcpp::Node {
             declare_parameter<double>("lookahead_distance", 1.0);
             lookahead_distance = get_parameter("lookahead_distance").as_double();
             declare_parameter<double>("max_linear_velocity", 0.2);
-            linear_velocity = get_parameter("max_linear_velocity").as_double();
+            max_linear_velocity = get_parameter("max_linear_velocity").as_double();
             declare_parameter<double>("goal_tolerance", 0.1);
             goal_tolerance = get_parameter("goal_tolerance").as_double();
             declare_parameter<double>("loop_rate", 2.0);
             rate = get_parameter("loop_rate").as_double();
+            declare_parameter<double>("turn_in_place_w", 1.0);
+            turn_in_place_w = get_parameter("turn_in_place_w").as_double();
 
             tf_buffer = std::make_unique<tf2_ros::Buffer>(this->get_clock());
             tf_listener = std::make_shared<tf2_ros::TransformListener>(*tf_buffer);
@@ -96,6 +98,15 @@ class PurePursuitController : public rclcpp::Node {
         nav_msgs::msg::Odometry::SharedPtr get_odom() {
             std::lock_guard<std::mutex> lock(odom_mtx);
             return odom;
+        }
+
+        double desired_velocity(double d) {
+            double scale = 1.0;
+            double slowdown_distance = 10 * goal_tolerance;
+            if(d <= slowdown_distance) {
+                scale = d / slowdown_distance;
+            }
+            return max_linear_velocity * scale;
         }
 
         geometry_msgs::msg::PoseStamped transform_pose(
@@ -172,8 +183,9 @@ class PurePursuitController : public rclcpp::Node {
 
                 if(abs(target_heading - heading) > 3.14159) {
                     cmd_vel.twist.linear.x = 0.0;
-                    cmd_vel.twist.angular.z = 0.5;
+                    cmd_vel.twist.angular.z = turn_in_place_w;
                 } else {
+                    double linear_velocity = desired_velocity(goal_distance);
                     cmd_vel.twist.linear.x = linear_velocity;
                     cmd_vel.twist.angular.z = linear_velocity * k;
                 }
@@ -205,8 +217,9 @@ class PurePursuitController : public rclcpp::Node {
         int target_index = 0;
         double rate;
         double lookahead_distance;
-        double linear_velocity;
+        double max_linear_velocity;
         double goal_tolerance;
+        double turn_in_place_w;
 };
 
 int main(int argc, char ** argv) {
