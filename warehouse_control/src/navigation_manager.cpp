@@ -29,6 +29,7 @@ class NavigationManager : public rclcpp::Node {
                 10,
                 std::bind(&NavigationManager::odom_callback, this, std::placeholders::_1)
             );
+            path_pub = create_publisher<nav_msgs::msg::Path>("/path", 10);
             robot_state_client = create_client<SetRobotState>("/robot_state/set", 10);
             controller_client = rclcpp_action::create_client<FollowPath>(this, "/follow_path");
             timer = create_timer(0.1s, std::bind(&NavigationManager::timer_callback, this));
@@ -62,30 +63,36 @@ class NavigationManager : public rclcpp::Node {
         }
 
         nav_msgs::msg::Path generate_path(geometry_msgs::msg::PoseStamped goal_waypoint) {
-            // Creates a straight line with num_poses waypoints between current odom pose and the goal waypoint
+            // Creates a straight line with given pose density between current odom pose and the goal waypoint
             // TODO: with A* or similar
 
             geometry_msgs::msg::Pose robot_pose = odom.pose.pose;
             nav_msgs::msg::Path path;
             path.header.frame_id = "/odom";
 
-            int num_poses = 5;
+            int pose_density = 10; // waypoints / meter
             
             double dx = goal_waypoint.pose.position.x - robot_pose.position.x;
             double dy = goal_waypoint.pose.position.y - robot_pose.position.y;
-
+            double d = hypot(dx, dy);
+            int num_poses = floor(d * pose_density);
+            RCLCPP_INFO(get_logger(), "dx: %f, dy: %f", dx, dy);
+            
             for(int i = 0; i < num_poses; i++) {
                 geometry_msgs::msg::PoseStamped waypoint;
-                waypoint.pose.position.x = (dx / (num_poses * (i + 1))) + robot_pose.position.x;
-                waypoint.pose.position.y = (dy / (num_poses * (i + 1))) + robot_pose.position.y;
+                waypoint.pose.position.x = (dx / (num_poses - i)) + robot_pose.position.x;
+                waypoint.pose.position.y = (dy / (num_poses - i)) + robot_pose.position.y;
+                RCLCPP_INFO(get_logger(), "x: %f, yy: %f", waypoint.pose.position.x, waypoint.pose.position.y);
                 path.poses.push_back(waypoint);
             }
 
+            path_pub->publish(path);
             return path;
         }
 
         rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr goal_sub;
         rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub;
+        rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_pub;
         rclcpp_action::Client<warehouse_interfaces::action::FollowPath>::SharedPtr controller_client;
         rclcpp::Client<SetRobotState>::SharedPtr robot_state_client;
         rclcpp::TimerBase::SharedPtr timer;

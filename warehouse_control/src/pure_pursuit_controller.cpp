@@ -145,11 +145,11 @@ class PurePursuitController : public rclcpp::Node {
                 double dy = target_pose.pose.position.y - robot_pos.y;
 
                 double x_local =  dx * cos(heading) + dy * sin(heading);
-                double y_local = -dx * sin(heading) + dy * cos(heading);   
+                double y_local = -dx * sin(heading) + dy * cos(heading);
 
-                double  L_actual = sqrt(x_local * x_local + y_local * y_local);
+                double L_actual = sqrt(x_local * x_local + y_local * y_local);
                 double k = 2 * y_local / (L_actual * L_actual);
-                RCLCPP_INFO(get_logger(), "k: %f", k);
+                RCLCPP_INFO(get_logger(), "k: %f, dx: %f, dy: %f", k, dx, dy);
 
                 feedback->waypoint_distance = distance(robot_pos, waypoints[target_index].pose.position);
                 feedback->goal_distance = distance(robot_pos, waypoints.back().pose.position);
