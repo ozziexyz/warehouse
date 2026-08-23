@@ -143,5 +143,192 @@
         </visual>
       </link>
     </model>
+    <model name="box_1">
+      <static>true</static>
+      <pose>6.5 -2 0 0 0 3.14159</pose>
+      <link name="link">
+        <collision name="base_collision">
+          <pose>0 0 0.025 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>3 2 0.05</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="base_visual">
+          <pose>0 0 0.025 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>3 2 0.05</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.55 0.35 0.15 1</ambient>
+            <diffuse>0.55 0.35 0.15 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+          </material>
+        </visual>
+
+        <collision name="long_side_a_collision">
+          <pose>0 -1 1 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>3 0.05 2</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="long_side_a_visual">
+          <pose>0 -1 1 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>3 0.05 2</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.55 0.35 0.15 1</ambient>
+            <diffuse>0.55 0.35 0.15 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+          </material>
+        </visual>
+
+        <collision name="long_side_b_collision">
+          <pose>0 1 1 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>3 0.05 2</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="long_side_b_visual">
+          <pose>0 1 1 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>3 0.05 2</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.55 0.35 0.15 1</ambient>
+            <diffuse>0.55 0.35 0.15 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+          </material>
+        </visual>
+
+        <collision name="short_side_collision">
+          <pose>-1.5 0 1 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.05 2 2</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="short_side_visual">
+          <pose>-1.5 0 1 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.05 2 2</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.55 0.35 0.15 1</ambient>
+            <diffuse>0.55 0.35 0.15 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="box_2">
+      <static>true</static>
+      <pose>6.5 2 0 0 0 3.14159</pose>
+      <link name="link">
+        <collision name="base_collision">
+          <pose>0 0 0.025 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>3 2 0.05</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="base_visual">
+          <pose>0 0 0.025 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>3 2 0.05</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.55 0.35 0.15 1</ambient>
+            <diffuse>0.55 0.35 0.15 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+          </material>
+        </visual>
+
+        <collision name="long_side_a_collision">
+          <pose>0 -1 1 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>3 0.05 2</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="long_side_a_visual">
+          <pose>0 -1 1 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>3 0.05 2</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.55 0.35 0.15 1</ambient>
+            <diffuse>0.55 0.35 0.15 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+          </material>
+        </visual>
+
+        <collision name="long_side_b_collision">
+          <pose>0 1 1 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>3 0.05 2</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="long_side_b_visual">
+          <pose>0 1 1 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>3 0.05 2</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.55 0.35 0.15 1</ambient>
+            <diffuse>0.55 0.35 0.15 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+          </material>
+        </visual>
+
+        <collision name="short_side_collision">
+          <pose>-1.5 0 1 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.05 2 2</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="short_side_visual">
+          <pose>-1.5 0 1 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.05 2 2</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.55 0.35 0.15 1</ambient>
+            <diffuse>0.55 0.35 0.15 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
   </world>
 </sdf>
