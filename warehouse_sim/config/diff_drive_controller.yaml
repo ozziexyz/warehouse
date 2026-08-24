@@ -9,6 +9,15 @@ controller_manager:
     diff_drive_controller:
       type: diff_drive_controller/DiffDriveController
 
+    flap_controller:
+      type: position_controllers/JointGroupPositionController
+
+flap_controller:
+  ros__parameters:
+    joints:
+      - front_flap_joint
+    use_sim_time: true
+
 diff_drive_controller:
   ros__parameters:
     left_wheel_names: ["left_wheel_joint"]

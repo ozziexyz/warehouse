@@ -86,6 +86,13 @@ def generate_launch_description():
         output='screen',
     )
 
+    flap_controller_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['flap_controller'],
+        output='screen',
+    )
+
     obstacle_marker_publisher = Node(
         package='warehouse_sim',
         executable='obstacle_marker_publisher.py',
@@ -120,6 +127,13 @@ def generate_launch_description():
         )
     )
 
+    delayed_flap_controller_spawner = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=diff_drive_controller_spawner,
+            on_exit=[flap_controller_spawner],
+        )
+    )
+
     return LaunchDescription([
         use_rviz_arg,
         headless_arg,
@@ -129,6 +143,7 @@ def generate_launch_description():
         spawn_robot,
         delayed_joint_state_broadcaster_spawner,
         delayed_diff_drive_controller_spawner,
+        delayed_flap_controller_spawner,
         obstacle_marker_publisher,
         rviz,
     ])

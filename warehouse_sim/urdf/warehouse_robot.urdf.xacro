@@ -19,12 +19,21 @@
   <xacro:property name="caster_radius" value="0.05"/>
   <xacro:property name="caster_mass" value="0.2"/>
 
+  <!-- Cargo cage: thin walls around the chassis, front wall has a hinged flap -->
+  <xacro:property name="cage_wall_height" value="1.0"/>
+  <xacro:property name="cage_wall_thickness" value="0.02"/>
+  <xacro:property name="cage_flap_height" value="0.5"/>
+  <xacro:property name="cage_wall_mass" value="0.5"/>
+  <xacro:property name="cage_flap_mass" value="0.3"/>
+
   <!-- Derived placement offsets -->
   <xacro:property name="ground_clearance" value="0.04"/>
   <xacro:property name="base_z" value="${wheel_radius + ground_clearance}"/>
   <xacro:property name="wheel_z_offset" value="${wheel_radius - base_z}"/>
   <xacro:property name="caster_z_offset" value="${caster_radius - base_z}"/>
   <xacro:property name="caster_x_offset" value="${base_length / 2 - caster_radius - 0.02}"/>
+  <xacro:property name="cage_base_z" value="${base_height / 2.0}"/>
+  <xacro:property name="cage_front_upper_height" value="${cage_wall_height - cage_flap_height}"/>
 
   <material name="body_gray">
     <color rgba="0.3 0.3 0.3 1.0"/>
@@ -34,6 +43,9 @@
   </material>
   <material name="caster_silver">
     <color rgba="0.7 0.7 0.7 1.0"/>
+  </material>
+  <material name="cage_yellow">
+    <color rgba="0.9 0.7 0.1 1.0"/>
   </material>
 
   <!-- base_footprint sits on the ground and is the robot's control/odometry origin -->
@@ -145,7 +157,101 @@
   <xacro:caster_wheel prefix="front" x_offset="${caster_x_offset}"/>
   <xacro:caster_wheel prefix="back" x_offset="${-caster_x_offset}"/>
 
-  <!-- ros2_control: only the two driven wheels are actuated -->
+  <!-- Fixed cage wall: a thin box sitting on top of the chassis -->
+  <xacro:macro name="cage_wall" params="name size_x size_y size_z origin_x origin_y origin_z">
+    <link name="${name}_wall_link">
+      <visual>
+        <geometry>
+          <box size="${size_x} ${size_y} ${size_z}"/>
+        </geometry>
+        <material name="cage_yellow"/>
+      </visual>
+      <collision>
+        <geometry>
+          <box size="${size_x} ${size_y} ${size_z}"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="${cage_wall_mass}"/>
+        <inertia
+          ixx="${cage_wall_mass / 12.0 * (size_y*size_y + size_z*size_z)}" ixy="0" ixz="0"
+          iyy="${cage_wall_mass / 12.0 * (size_x*size_x + size_z*size_z)}" iyz="0"
+          izz="${cage_wall_mass / 12.0 * (size_x*size_x + size_y*size_y)}"/>
+      </inertial>
+    </link>
+
+    <joint name="${name}_wall_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="${name}_wall_link"/>
+      <origin xyz="${origin_x} ${origin_y} ${origin_z}" rpy="0 0 0"/>
+    </joint>
+
+    <gazebo reference="${name}_wall_link">
+      <material>Gazebo/Yellow</material>
+    </gazebo>
+  </xacro:macro>
+
+  <xacro:cage_wall name="back"
+    size_x="${cage_wall_thickness}" size_y="${base_width}" size_z="${cage_wall_height}"
+    origin_x="${-(base_length/2 - cage_wall_thickness/2)}" origin_y="0"
+    origin_z="${cage_base_z + cage_wall_height/2}"/>
+
+  <xacro:cage_wall name="left"
+    size_x="${base_length}" size_y="${cage_wall_thickness}" size_z="${cage_wall_height}"
+    origin_x="0" origin_y="${base_width/2 - cage_wall_thickness/2}"
+    origin_z="${cage_base_z + cage_wall_height/2}"/>
+
+  <xacro:cage_wall name="right"
+    size_x="${base_length}" size_y="${cage_wall_thickness}" size_z="${cage_wall_height}"
+    origin_x="0" origin_y="${-(base_width/2 - cage_wall_thickness/2)}"
+    origin_z="${cage_base_z + cage_wall_height/2}"/>
+
+  <!-- Front wall: fixed upper section plus a hinged flap covering the bottom cage_flap_height -->
+  <xacro:cage_wall name="front_upper"
+    size_x="${cage_wall_thickness}" size_y="${base_width}" size_z="${cage_front_upper_height}"
+    origin_x="${base_length/2 - cage_wall_thickness/2}" origin_y="0"
+    origin_z="${cage_base_z + cage_flap_height + cage_front_upper_height/2}"/>
+
+  <!-- Front flap: hinged at its bottom edge, folds down/outward to open like a tailgate -->
+  <link name="front_flap_link">
+    <visual>
+      <origin xyz="0 0 ${cage_flap_height/2}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${cage_wall_thickness} ${base_width} ${cage_flap_height}"/>
+      </geometry>
+      <material name="wheel_black"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${cage_flap_height/2}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${cage_wall_thickness} ${base_width} ${cage_flap_height}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 ${cage_flap_height/2}" rpy="0 0 0"/>
+      <mass value="${cage_flap_mass}"/>
+      <inertia
+        ixx="${cage_flap_mass / 12.0 * (base_width*base_width + cage_flap_height*cage_flap_height)}" ixy="0" ixz="0"
+        iyy="${cage_flap_mass / 12.0 * (cage_wall_thickness*cage_wall_thickness + cage_flap_height*cage_flap_height)}" iyz="0"
+        izz="${cage_flap_mass / 12.0 * (cage_wall_thickness*cage_wall_thickness + base_width*base_width)}"/>
+    </inertial>
+  </link>
+
+  <joint name="front_flap_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="front_flap_link"/>
+    <origin xyz="${base_length/2 - cage_wall_thickness/2} 0 ${cage_base_z}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <!-- 0 = closed (vertical), pi/2 = fully open (folded flat outward) -->
+    <limit lower="0" upper="${pi/2}" effort="10.0" velocity="1.0"/>
+    <dynamics damping="0.2" friction="0.05"/>
+  </joint>
+
+  <gazebo reference="front_flap_link">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <!-- ros2_control: the two driven wheels plus the front cage flap are actuated -->
   <ros2_control name="warehouse_robot_system" type="system">
     <hardware>
       <plugin>gz_ros2_control/GazeboSimSystem</plugin>
@@ -157,6 +263,11 @@
     </joint>
     <joint name="right_wheel_joint">
       <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="front_flap_joint">
+      <command_interface name="position"/>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
     </joint>
