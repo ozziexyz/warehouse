@@ -315,6 +315,66 @@
     </sensor>
   </gazebo>
 
+  <!-- Rear camera: mounted flush on the chassis back face, pointing straight out along -x -->
+  <link name="rear_camera_link">
+    <visual>
+      <geometry>
+        <box size="${camera_size} ${camera_size} ${camera_size}"/>
+      </geometry>
+      <material name="wheel_black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${camera_size} ${camera_size} ${camera_size}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${camera_mass}"/>
+      <inertia
+        ixx="${camera_mass / 6.0 * camera_size*camera_size}" ixy="0" ixz="0"
+        iyy="${camera_mass / 6.0 * camera_size*camera_size}" iyz="0"
+        izz="${camera_mass / 6.0 * camera_size*camera_size}"/>
+    </inertial>
+  </link>
+
+  <joint name="rear_camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="rear_camera_link"/>
+    <origin xyz="${-(base_length/2 + camera_size/2)} 0 0" rpy="0 0 ${pi}"/>
+  </joint>
+
+  <!-- Optical frame: REP 103 convention (Z forward, X right, Y down), used for image/camera_info -->
+  <link name="rear_camera_optical_frame"/>
+
+  <joint name="rear_camera_optical_joint" type="fixed">
+    <parent link="rear_camera_link"/>
+    <child link="rear_camera_optical_frame"/>
+    <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+  </joint>
+
+  <gazebo reference="rear_camera_link">
+    <material>Gazebo/Black</material>
+    <sensor name="rear_camera" type="camera">
+      <camera>
+        <horizontal_fov>1.4</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+        </image>
+        <clip>
+          <near>0.05</near>
+          <far>50</far>
+        </clip>
+        <!-- Sensor is aimed straight out the back for now; revisit if the mount angle changes -->
+        <optical_frame_id>rear_camera_optical_frame</optical_frame_id>
+      </camera>
+      <always_on>true</always_on>
+      <update_rate>15</update_rate>
+      <visualize>true</visualize>
+      <topic>rear_camera</topic>
+    </sensor>
+  </gazebo>
+
   <!-- ros2_control: the two driven wheels plus the front cage flap are actuated -->
   <ros2_control name="warehouse_robot_system" type="system">
     <hardware>

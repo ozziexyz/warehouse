@@ -104,7 +104,7 @@ class PurePursuitController : public rclcpp::Node {
 
         double desired_velocity(double d) {
             double scale = 1.0;
-            double slowdown_distance = 5 * goal_tolerance;
+            double slowdown_distance = 10 * goal_tolerance;
             if(d <= slowdown_distance) {
                 scale = d / slowdown_distance;
             }

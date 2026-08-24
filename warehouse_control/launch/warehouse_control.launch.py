@@ -4,7 +4,6 @@ from launch.event_handlers import OnProcessStart
 from launch_ros.actions import Node
 import math
 
-
 def generate_launch_description():
     state_manager_node = Node(
         package='warehouse_control',
@@ -21,7 +20,7 @@ def generate_launch_description():
         parameters=[{
             'lookahead_distance': 0.25,
             'max_linear_velocity': 0.5,
-            'goal_tolerance': 0.1,
+            'goal_tolerance': 0.01,
             'loop_rate': 10.0,
             'turn_in_place_w': 1.0,
             'max_turn': 90 * math.pi / 180

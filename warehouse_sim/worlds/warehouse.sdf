@@ -4,6 +4,9 @@
     <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics" />
     <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands" />
     <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster" />
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
 
     <light type="directional" name="sun">
       <cast_shadows>true</cast_shadows>
@@ -329,6 +332,195 @@
           </material>
         </visual>
       </link>
+    </model>
+
+    <!-- Tag pillars: placeholder posts to eventually mount AprilTags on. Positions are
+         stand-ins and will be hand-tuned later. -->
+    <model name="tag_pillar_1">
+      <static>true</static>
+      <pose>6 0 0.5 0 0 3.14159</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.85 0.85 0.85 1</ambient>
+            <diffuse>0.85 0.85 0.85 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+          </material>
+        </visual>
+      </link>
+      <!-- AprilTag mounted flush on the +X face, moves with the pillar since it's nested -->
+      <include>
+        <uri>model://Apriltag36_11_00000</uri>
+        <name>tag_0</name>
+        <pose>0.501 0 0 0 1.5707963267948966 0</pose>
+      </include>
+    </model>
+
+    <model name="tag_pillar_2">
+      <static>true</static>
+      <pose>-5 0 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.85 0.85 0.85 1</ambient>
+            <diffuse>0.85 0.85 0.85 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+          </material>
+        </visual>
+      </link>
+      <include>
+        <uri>model://Apriltag36_11_00001</uri>
+        <name>tag_1</name>
+        <pose>0.501 0 0 0 1.5707963267948966 0</pose>
+      </include>
+    </model>
+
+    <model name="tag_pillar_3">
+      <static>true</static>
+      <pose>3 -6 0.5 0 0 1.5707963267948966</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.85 0.85 0.85 1</ambient>
+            <diffuse>0.85 0.85 0.85 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+          </material>
+        </visual>
+      </link>
+      <include>
+        <uri>model://Apriltag36_11_00002</uri>
+        <name>tag_2</name>
+        <pose>0.501 0 0 0 1.5707963267948966 0</pose>
+      </include>
+    </model>
+
+    <model name="tag_pillar_4">
+      <static>true</static>
+      <pose>3 6 0.5 0 0 -1.5707963267948966</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.85 0.85 0.85 1</ambient>
+            <diffuse>0.85 0.85 0.85 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+          </material>
+        </visual>
+      </link>
+      <include>
+        <uri>model://Apriltag36_11_00003</uri>
+        <name>tag_3</name>
+        <pose>0.501 0 0 0 1.5707963267948966 0</pose>
+      </include>
+    </model>
+
+    <model name="tag_pillar_5">
+      <static>true</static>
+      <pose>-6 2 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.85 0.85 0.85 1</ambient>
+            <diffuse>0.85 0.85 0.85 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+          </material>
+        </visual>
+      </link>
+      <include>
+        <uri>model://Apriltag36_11_00004</uri>
+        <name>tag_4</name>
+        <pose>.501 0 0 0 1.5707963267948966 0</pose>
+      </include>
+    </model>
+
+    <model name="tag_pillar_6">
+      <static>true</static>
+      <pose>-6 -2 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.85 0.85 0.85 1</ambient>
+            <diffuse>0.85 0.85 0.85 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+          </material>
+        </visual>
+      </link>
+      <include>
+        <uri>model://Apriltag36_11_00005</uri>
+        <name>tag_5</name>
+        <pose>0.501 0 0 0 1.5707963267948966 0</pose>
+      </include>
     </model>
   </world>
 </sdf>

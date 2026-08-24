@@ -9,7 +9,7 @@ Panels:
         - /TF1
         - /Odometry1
       Splitter Ratio: 0.5
-    Tree Height: 204
+    Tree Height: 104
   - Class: rviz_common/Selection
     Name: Selection
   - Class: rviz_common/Views
@@ -61,6 +61,11 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        back_wall_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         base_footprint:
           Alpha: 1
           Show Axes: false
@@ -70,12 +75,41 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        camera_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        camera_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         front_caster_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
+        front_flap_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        front_upper_wall_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_wall_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         left_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_wall_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -180,13 +214,27 @@ Visualization Manager:
       Enabled: true
       Name: Obstacles
       Namespaces:
-        {}
+        obstacles: true
       Topic:
         Depth: 5
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /obstacle_markers
+      Value: true
+    - Class: rviz_default_plugins/Image
+      Enabled: true
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Image
+      Normalize Range: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /front_camera/image_raw
       Value: true
   Enabled: true
   Global Options:
@@ -206,7 +254,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 5.472043514251709
+      Distance: 13.060248374938965
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -221,10 +269,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.3849995136260986
+      Pitch: 0.4997968077659607
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz_default_plugins)
-      Yaw: 5.4781928062438965
+      Yaw: 3.6150171756744385
     Saved: ~
 Window Geometry:
   Displays:
@@ -232,7 +280,9 @@ Window Geometry:
   Height: 1000
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd00000001000000000000021e0000036cfc0200000003fb000000100044006900730070006c00610079007301000000560000018a0000012600fffffffb0000001200530065006c0065006300740069006f006e01000001e9000000bd0000008600fffffffb0000000a0056006900650077007301000002af00000113000000ec00ffffff000003510000036c00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Image:
+    collapsed: false
+  QMainWindow State: 000000ff00000000fd00000001000000000000021e0000036cfc0200000004fb000000100044006900730070006c0061007900730100000056000001260000012600fffffffb0000001200530065006c0065006300740069006f006e0100000185000000860000008600fffffffb0000000a005600690065007700730100000214000000ec000000ec00fffffffb0000000a0049006d0061006700650100000309000000b90000001e00ffffff000003510000036c00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Views:
