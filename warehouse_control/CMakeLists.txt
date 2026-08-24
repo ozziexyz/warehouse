@@ -24,10 +24,14 @@ ament_target_dependencies(navigation_manager rclcpp rclcpp_action geometry_msgs 
 add_executable(state_manager src/state_manager.cpp)
 ament_target_dependencies(state_manager rclcpp warehouse_interfaces)
 
+add_executable(path_planner src/path_planner.cpp)
+ament_target_dependencies(path_planner rclcpp nav_msgs geometry_msgs warehouse_interfaces)
+
 install(TARGETS
   pure_pursuit_controller
   navigation_manager
   state_manager
+  path_planner
   DESTINATION lib/${PROJECT_NAME}
 )
 

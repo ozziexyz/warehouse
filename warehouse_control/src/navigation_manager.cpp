@@ -8,6 +8,7 @@
 
 #include <warehouse_interfaces/action/follow_path.hpp>
 #include <warehouse_interfaces/srv/set_robot_state.hpp>
+#include <warehouse_interfaces/srv/generate_path.hpp>
 
 using namespace warehouse_interfaces::action;
 using namespace warehouse_interfaces::srv;
@@ -31,6 +32,7 @@ class NavigationManager : public rclcpp::Node {
             );
             path_pub = create_publisher<nav_msgs::msg::Path>("/path", 10);
             robot_state_client = create_client<SetRobotState>("/robot_state/set", 10);
+            path_planner_client = create_client<GeneratePath>("/generate_path", 10);
             controller_client = rclcpp_action::create_client<FollowPath>(this, "/follow_path");
             timer = create_timer(0.5s, std::bind(&NavigationManager::timer_callback, this));
 
@@ -38,20 +40,44 @@ class NavigationManager : public rclcpp::Node {
                 RCLCPP_ERROR(this->get_logger(), "Robot state service service not available.");
                 return;
             }
+            if (!path_planner_client->wait_for_service(1s)) {
+                RCLCPP_ERROR(this->get_logger(), "Path planner service not available.");
+                return;
+            }
             if (!controller_client->wait_for_action_server(1s)) {
                 RCLCPP_ERROR(this->get_logger(), "Pure pursuit action service not available.");
                 return;
             }
         }
-    
+
     private:
         void goal_sub_callback(const geometry_msgs::msg::PoseStamped & msg) {
             goal_pose = msg;
-            path = generate_path(goal_pose);
+
+            auto request = std::make_shared<GeneratePath::Request>();
+            request->start.header.frame_id = "/odom";
+            request->start.pose = odom.pose.pose;
+            request->goal = goal_pose;
+
+            path_planner_client->async_send_request(
+                request,
+                std::bind(&NavigationManager::generate_path_response_callback, this, std::placeholders::_1)
+            );
+        }
+
+        void generate_path_response_callback(rclcpp::Client<GeneratePath>::SharedFuture future) {
+            auto response = future.get();
+            if (!response->success) {
+                RCLCPP_WARN(get_logger(), "Path planning failed for requested goal");
+                return;
+            }
+
+            path = response->path;
+            path_pub->publish(path);
+
             FollowPath::Goal goal_msg;
             goal_msg.path = path;
-
-            auto future = controller_client->async_send_goal(goal_msg);
+            controller_client->async_send_goal(goal_msg);
         }
 
         void odom_callback(const nav_msgs::msg::Odometry & msg) {
@@ -64,39 +90,12 @@ class NavigationManager : public rclcpp::Node {
             }
         }
 
-        nav_msgs::msg::Path generate_path(geometry_msgs::msg::PoseStamped goal_waypoint) {
-            // Creates a straight line with given pose density between current odom pose and the goal waypoint
-            // TODO: with A* or similar
-
-            geometry_msgs::msg::Pose robot_pose = odom.pose.pose;
-            nav_msgs::msg::Path path;
-            path.header.frame_id = "/odom";
-
-            int pose_density = 10; // waypoints / meter
-            
-            double dx = goal_waypoint.pose.position.x - robot_pose.position.x;
-            double dy = goal_waypoint.pose.position.y - robot_pose.position.y;
-            double d = hypot(dx, dy);
-            int num_poses = floor(d * pose_density);
-            RCLCPP_INFO(get_logger(), "dx: %f, dy: %f", dx, dy);
-            
-            for(int i = 0; i < num_poses; i++) {
-                geometry_msgs::msg::PoseStamped waypoint;
-                waypoint.pose.position.x = i * (dx / (num_poses - 1)) + robot_pose.position.x;
-                waypoint.pose.position.y = i * (dy / (num_poses - 1)) + robot_pose.position.y;
-                // RCLCPP_INFO(get_logger(), "x: %f, y: %f", waypoint.pose.position.x, waypoint.pose.position.y);
-                path.poses.push_back(waypoint);
-            }
-
-            path_pub->publish(path);
-            return path;
-        }
-
         rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr goal_sub;
         rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub;
         rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_pub;
         rclcpp_action::Client<warehouse_interfaces::action::FollowPath>::SharedPtr controller_client;
         rclcpp::Client<SetRobotState>::SharedPtr robot_state_client;
+        rclcpp::Client<GeneratePath>::SharedPtr path_planner_client;
         rclcpp::TimerBase::SharedPtr timer;
         geometry_msgs::msg::PoseStamped goal_pose;
         nav_msgs::msg::Path path;

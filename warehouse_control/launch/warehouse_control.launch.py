@@ -2,6 +2,7 @@ from launch import LaunchDescription
 from launch.actions import RegisterEventHandler
 from launch.event_handlers import OnProcessStart
 from launch_ros.actions import Node
+import math
 
 
 def generate_launch_description():
@@ -18,11 +19,12 @@ def generate_launch_description():
         name='pure_pursuit_controller',
         output='screen',
         parameters=[{
-            'lookahead_distance': 0.35,
+            'lookahead_distance': 0.25,
             'max_linear_velocity': 0.5,
             'goal_tolerance': 0.1,
             'loop_rate': 10.0,
-            'turn_in_place_w': 1.0
+            'turn_in_place_w': 1.0,
+            'max_turn': 90 * math.pi / 180
         }],
     )
 
@@ -31,6 +33,13 @@ def generate_launch_description():
         executable='navigation_manager',
         name='navigation_manager',
         output='screen',
+    )
+
+    path_planner_node = Node(
+        package='warehouse_control',
+        executable='path_planner',
+        name='path_planner',
+        output='screen'
     )
 
     # pure_pursuit_controller starts once state_manager is running
@@ -53,6 +62,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         state_manager_node,
+        path_planner_node,
         start_pure_pursuit_after_state_manager,
         start_navigation_manager_after_pure_pursuit,
     ])
