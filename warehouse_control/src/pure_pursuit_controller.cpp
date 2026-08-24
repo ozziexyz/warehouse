@@ -104,7 +104,7 @@ class PurePursuitController : public rclcpp::Node {
 
         double desired_velocity(double d) {
             double scale = 1.0;
-            double slowdown_distance = 10 * goal_tolerance;
+            double slowdown_distance = 5 * goal_tolerance;
             if(d <= slowdown_distance) {
                 scale = d / slowdown_distance;
             }
@@ -200,6 +200,10 @@ class PurePursuitController : public rclcpp::Node {
 
                 loop_rate.sleep();
             }
+
+            geometry_msgs::msg::TwistStamped cmd_vel;
+            cmd_vel.header.stamp = current_odom->header.stamp;
+            cmd_vel_pub->publish(cmd_vel);
 
             if (rclcpp::ok()) {
                 result->success = true;
