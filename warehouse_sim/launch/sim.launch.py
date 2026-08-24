@@ -55,6 +55,20 @@ def generate_launch_description():
         output='screen',
     )
 
+    camera_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=[
+            '/front_camera@sensor_msgs/msg/Image@gz.msgs.Image',
+            '/front_camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo',
+        ],
+        remappings=[
+            ('/front_camera', '/front_camera/image_raw'),
+            ('/front_camera_info', '/front_camera/camera_info'),
+        ],
+        output='screen',
+    )
+
     robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -139,6 +153,7 @@ def generate_launch_description():
         headless_arg,
         gz_sim,
         clock_bridge,
+        camera_bridge,
         robot_state_publisher,
         spawn_robot,
         delayed_joint_state_broadcaster_spawner,
