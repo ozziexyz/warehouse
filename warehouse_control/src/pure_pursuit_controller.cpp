@@ -34,6 +34,8 @@ class PurePursuitController : public rclcpp::Node {
             rate = get_parameter("loop_rate").as_double();
             declare_parameter<double>("turn_in_place_w", 1.0);
             turn_in_place_w = get_parameter("turn_in_place_w").as_double();
+            declare_parameter<double>("max_turn", 70.0 * M_PI / 180.0);
+            max_turn = get_parameter("max_turn").as_double();
 
             tf_buffer = std::make_unique<tf2_ros::Buffer>(this->get_clock());
             tf_listener = std::make_shared<tf2_ros::TransformListener>(*tf_buffer);
@@ -168,7 +170,7 @@ class PurePursuitController : public rclcpp::Node {
                 double x_local =  dx * cos(heading) + dy * sin(heading);
                 double y_local = -dx * sin(heading) + dy * cos(heading);
 
-                double target_heading = atan2(dx, dy);
+                double target_heading = atan2(dy, dx);
 
                 double L_actual = sqrt(x_local * x_local + y_local * y_local);
                 double k = 2 * y_local / (L_actual * L_actual);
@@ -181,7 +183,10 @@ class PurePursuitController : public rclcpp::Node {
 
                 geometry_msgs::msg::TwistStamped cmd_vel;
 
-                if(abs(target_heading - heading) > 3.14159) {
+                double heading_error = target_heading - heading;
+                heading_error = atan2(sin(heading_error), cos(heading_error));
+
+                if(std::abs(heading_error) > max_turn) {
                     cmd_vel.twist.linear.x = 0.0;
                     cmd_vel.twist.angular.z = turn_in_place_w;
                 } else {
@@ -190,6 +195,7 @@ class PurePursuitController : public rclcpp::Node {
                     cmd_vel.twist.angular.z = linear_velocity * k;
                 }
 
+                cmd_vel.header.stamp = current_odom->header.stamp;
                 cmd_vel_pub->publish(cmd_vel);
 
                 loop_rate.sleep();
@@ -220,6 +226,7 @@ class PurePursuitController : public rclcpp::Node {
         double max_linear_velocity;
         double goal_tolerance;
         double turn_in_place_w;
+        double max_turn;
 };
 
 int main(int argc, char ** argv) {
