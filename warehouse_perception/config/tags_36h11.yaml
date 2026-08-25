@@ -13,7 +13,7 @@
             blur: 0.0           # sigma of Gaussian blur for quad detection
             refine: True        # snap to strong gradients
             sharpening: 0.25    # sharpening of decoded images
-            debug: False        # write additional debugging images to current working directory
+            debug: True        # write additional debugging images to current working directory
 
 
         pose_estimation_method: "pnp"   # method for estimating the tag pose

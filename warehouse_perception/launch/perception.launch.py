@@ -3,13 +3,14 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 
 
 def generate_launch_description():
     pkg_warehouse_perception = get_package_share_directory('warehouse_perception')
     tags_config_path = os.path.join(pkg_warehouse_perception, 'config', 'tags_36h11.yaml')
+    tag_tf_params = PathJoinSubstitution([pkg_warehouse_perception, 'config', 'tag_tf.yaml'])
 
     camera_topic_arg = DeclareLaunchArgument(
         'camera_topic',
@@ -25,7 +26,8 @@ def generate_launch_description():
         remappings=[
             ('image_raw', [camera_topic, '/image_raw']),
             ('camera_info', [camera_topic, '/camera_info'])
-        ]
+        ],
+        parameters=[{'use_sim_time': True}]
     )
 
     # apriltag_ros needs a rectified image; the simulated camera only publishes image_raw
@@ -39,6 +41,7 @@ def generate_launch_description():
             ('image_rect', [camera_topic, '/image_rect']),
         ],
         output='screen',
+        parameters=[{'use_sim_time': True}]
     )
 
     apriltag_node = Node(
@@ -49,13 +52,20 @@ def generate_launch_description():
             ('image_rect', [camera_topic, '/image_rect']),
             ('camera_info', [camera_topic, '/camera_info']),
         ],
-        parameters=[tags_config_path],
+        parameters=[tags_config_path, {'use_sim_time': True}],
         output='screen',
+    )
+
+    apriltag_localization = Node(
+        package='warehouse_perception',
+        executable='apriltag_localization',
+        parameters=[tag_tf_params, {'use_sim_time': True}]
     )
 
     return LaunchDescription([
         camera_topic_arg,
         rectify_node,
         apriltag_node,
-        camera_info_publisher
+        camera_info_publisher,
+        apriltag_localization
     ])

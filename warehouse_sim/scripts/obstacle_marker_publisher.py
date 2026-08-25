@@ -105,7 +105,7 @@ class ObstacleMarkerPublisher(Node):
     def __init__(self):
         super().__init__('obstacle_marker_publisher')
         self.declare_parameter('world_path', '')
-        self.declare_parameter('frame_id', 'odom')
+        self.declare_parameter('frame_id', 'map')
         self.declare_parameter('publish_period_sec', 1.0)
 
         world_path = self.get_parameter('world_path').value

@@ -127,7 +127,7 @@ def generate_launch_description():
         executable='obstacle_marker_publisher.py',
         parameters=[{
             'world_path': world_path,
-            'frame_id': 'odom',
+            'frame_id': 'map',
             'use_sim_time': True,
         }],
         output='screen',
