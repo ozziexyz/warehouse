@@ -75,12 +75,12 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        camera_link:
+        front_camera_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        camera_optical_frame:
+        front_camera_optical_frame:
           Alpha: 1
           Show Axes: false
           Show Trail: false

@@ -256,7 +256,7 @@
   </gazebo>
 
   <!-- Front camera: mounted flush on the chassis front face, below the cage, pointing straight out along +x -->
-  <link name="camera_link">
+  <link name="front_camera_link">
     <visual>
       <geometry>
         <box size="${camera_size} ${camera_size} ${camera_size}"/>
@@ -277,22 +277,22 @@
     </inertial>
   </link>
 
-  <joint name="camera_joint" type="fixed">
+  <joint name="front_camera_joint" type="fixed">
     <parent link="base_link"/>
-    <child link="camera_link"/>
+    <child link="front_camera_link"/>
     <origin xyz="${base_length/2 + camera_size/2} 0 0" rpy="0 0 0"/>
   </joint>
 
   <!-- Optical frame: REP 103 convention (Z forward, X right, Y down), used for image/camera_info -->
-  <link name="camera_optical_frame"/>
+  <link name="front_camera_optical_frame"/>
 
-  <joint name="camera_optical_joint" type="fixed">
-    <parent link="camera_link"/>
-    <child link="camera_optical_frame"/>
+  <joint name="front_camera_optical_joint" type="fixed">
+    <parent link="front_camera_link"/>
+    <child link="front_camera_optical_frame"/>
     <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
   </joint>
 
-  <gazebo reference="camera_link">
+  <gazebo reference="front_camera_link">
     <material>Gazebo/Black</material>
     <sensor name="front_camera" type="camera">
       <camera>
@@ -306,7 +306,7 @@
           <far>50</far>
         </clip>
         <!-- Sensor is aimed straight ahead for now; revisit if the mount angle changes -->
-        <optical_frame_id>camera_optical_frame</optical_frame_id>
+        <optical_frame_id>front_camera_optical_frame</optical_frame_id>
       </camera>
       <always_on>true</always_on>
       <update_rate>15</update_rate>
