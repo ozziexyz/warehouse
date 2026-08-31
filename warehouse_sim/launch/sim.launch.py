@@ -84,6 +84,15 @@ def generate_launch_description():
         output='screen',
     )
 
+    imu_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=[
+            '/imu@sensor_msgs/msg/Imu@gz.msgs.IMU',
+        ],
+        output='screen',
+    )
+
     robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -171,6 +180,7 @@ def generate_launch_description():
         clock_bridge,
         front_camera_bridge,
         rear_camera_bridge,
+        imu_bridge,
         robot_state_publisher,
         spawn_robot,
         delayed_joint_state_broadcaster_spawner,

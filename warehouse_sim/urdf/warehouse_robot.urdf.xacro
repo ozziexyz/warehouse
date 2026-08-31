@@ -30,6 +30,10 @@
   <xacro:property name="camera_size" value="0.04"/>
   <xacro:property name="camera_mass" value="0.05"/>
 
+  <!-- IMU -->
+  <xacro:property name="imu_size" value="0.02"/>
+  <xacro:property name="imu_mass" value="0.01"/>
+
   <!-- Derived placement offsets -->
   <xacro:property name="ground_clearance" value="0.04"/>
   <xacro:property name="base_z" value="${wheel_radius + ground_clearance}"/>
@@ -372,6 +376,42 @@
       <update_rate>15</update_rate>
       <visualize>true</visualize>
       <topic>rear_camera</topic>
+    </sensor>
+  </gazebo>
+
+  <!-- IMU: mounted at the chassis origin -->
+  <link name="imu_link">
+    <visual>
+      <geometry>
+        <box size="${imu_size} ${imu_size} ${imu_size}"/>
+      </geometry>
+      <material name="wheel_black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${imu_size} ${imu_size} ${imu_size}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${imu_mass}"/>
+      <inertia
+        ixx="${imu_mass / 6.0 * imu_size*imu_size}" ixy="0" ixz="0"
+        iyy="${imu_mass / 6.0 * imu_size*imu_size}" iyz="0"
+        izz="${imu_mass / 6.0 * imu_size*imu_size}"/>
+    </inertial>
+  </link>
+
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <gazebo reference="imu_link">
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <topic>imu</topic>
     </sensor>
   </gazebo>
 
