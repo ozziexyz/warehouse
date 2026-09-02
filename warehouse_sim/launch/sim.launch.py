@@ -3,7 +3,7 @@ import os
 import xacro
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, RegisterEventHandler, SetEnvironmentVariable
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, RegisterEventHandler
 from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -19,11 +19,6 @@ def generate_launch_description():
     xacro_path = os.path.join(pkg_warehouse_sim, 'urdf', 'warehouse_robot.urdf.xacro')
     controller_config_path = os.path.join(pkg_warehouse_sim, 'config', 'diff_drive_controller.yaml')
     rviz_config_path = os.path.join(pkg_warehouse_sim, 'rviz', 'warehouse_sim.rviz')
-    models_path = os.path.join(pkg_warehouse_sim, 'models')
-
-    # So `model://...` URIs in the world file (e.g. the AprilTag pillar models) resolve
-    gz_resource_path = os.pathsep.join(filter(None, [models_path, os.environ.get('GZ_SIM_RESOURCE_PATH', '')]))
-    set_gz_resource_path = SetEnvironmentVariable('GZ_SIM_RESOURCE_PATH', gz_resource_path)
 
     robot_description_content = xacro.process_file(
         xacro_path,
@@ -175,7 +170,6 @@ def generate_launch_description():
     return LaunchDescription([
         use_rviz_arg,
         headless_arg,
-        set_gz_resource_path,
         gz_sim,
         clock_bridge,
         front_camera_bridge,
