@@ -11,6 +11,8 @@ def generate_launch_description():
     pkg_warehouse_perception = get_package_share_directory('warehouse_perception')
     tags_config_path = os.path.join(pkg_warehouse_perception, 'config', 'tags_36h11.yaml')
     tag_tf_params = PathJoinSubstitution([pkg_warehouse_perception, 'config', 'tag_tf.yaml'])
+    local_ekf_params = os.path.join(pkg_warehouse_perception, 'config', 'local_ekf.yaml')
+    global_ekf_params = os.path.join(pkg_warehouse_perception, 'config', 'global_ekf.yaml')
 
     camera_topic_arg = DeclareLaunchArgument(
         'camera_topic',
@@ -62,10 +64,28 @@ def generate_launch_description():
         parameters=[tag_tf_params, {'use_sim_time': True}]
     )
 
+    local_ekf_node = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='local_ekf_node',
+        output='screen',
+        parameters=[local_ekf_params]
+    )
+
+    global_ekf_node = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='global_ekf_node',
+        output='screen',
+        parameters=[global_ekf_params]
+    )
+
     return LaunchDescription([
         camera_topic_arg,
         rectify_node,
         apriltag_node,
         camera_info_publisher,
-        apriltag_localization
+        apriltag_localization,
+        local_ekf_node,
+        global_ekf_node
     ])

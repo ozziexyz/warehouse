@@ -1,4 +1,4 @@
-local_ekf_node:
+global_ekf_node:
   ros__parameters:
     use_sim_time: true
     frequency: 30.0
@@ -7,9 +7,9 @@ local_ekf_node:
     map_frame: map
     odom_frame: odom
     base_link_frame: base_footprint
-    world_frame: odom
+    world_frame: map
 
-    odom0: /diff_drive_controller/odom
+    odom0: /odometry/local
     odom0_config: [true,  true,  false,
                    false, false, true,
                    true,  false, false,
@@ -22,3 +22,13 @@ local_ekf_node:
                   false, false, false,
                   false, false, true,
                   true,  false, false]
+
+    pose0: /apriltag/pose        # your AprilTag pose estimate
+    pose0_config: [true,  true,  false,
+                   false, false, true,
+                   false, false, false,
+                   false, false, false,
+                   false, false, false]
+    pose0_differential: false
+    pose0_rejection_threshold: 5.0   # Mahalanobis distance, tune this
+    pose0_queue_size: 5

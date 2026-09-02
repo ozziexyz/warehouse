@@ -25,7 +25,7 @@ class StaticCameraInfoPublisher : public rclcpp::Node {
             double fx = info.width / (2 * tan(hfov / 2));
             double fy = fx;
             double cx = info.width / 2.0;
-            double cy = info.width / 2.0;
+            double cy = info.height / 2.0;
 
             info.distortion_model = "plumb_bob";
             info.d = {0.0, 0.0, 0.0, 0.0, 0.0};

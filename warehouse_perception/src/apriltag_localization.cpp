@@ -1,5 +1,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <geometry_msgs/msg/transform_stamped.hpp>
+#include <geometry_msgs/msg/transform.hpp>
+#include <geometry_msgs/msg/pose_with_covariance_stamped.hpp>
 #include <tf2_ros/buffer.hpp>
 #include <tf2_ros/transform_listener.hpp>
 #include <tf2_ros/transform_broadcaster.hpp>
@@ -43,9 +45,9 @@ class AprilTagLocalization : public rclcpp::Node {
 
             tf_buffer = std::make_unique<tf2_ros::Buffer>(this->get_clock());
             tf_listener = std::make_shared<tf2_ros::TransformListener>(*tf_buffer);
-            tf_broadcaster = std::make_shared<tf2_ros::TransformBroadcaster>(*this);
 
             timer = create_timer(0.1s, std::bind(&AprilTagLocalization::timer_callback, this));
+            pose_pub = create_publisher<geometry_msgs::msg::PoseWithCovarianceStamped>("/apriltag/pose", 10);
         }
 
     private:
@@ -55,12 +57,12 @@ class AprilTagLocalization : public rclcpp::Node {
                 geometry_msgs::msg::TransformStamped odom_to_tag;
                 try {
                     odom_to_tag = tf_buffer->lookupTransform(
-                    "odom", tag_frame, tf2::TimePointZero);
+                    "base_footprint", tag_frame, tf2::TimePointZero);
                 } catch (const tf2::TransformException &) {
                     continue;
                 }
 
-                publish_map_odom(id, odom_to_tag);
+                publish_pose_estimate(id, odom_to_tag);
                 return;
             }
         }
@@ -71,24 +73,65 @@ class AprilTagLocalization : public rclcpp::Node {
             }
         }
 
-        void publish_map_odom(int id, geometry_msgs::msg::TransformStamped & tf) {
-            tf2::Transform odom_tag;
-            tf2::fromMsg(tf.transform, odom_tag);
-            tf2::Transform map_tag = tag_map[id];
-            tf2::Transform map_odom = map_tag * odom_tag.inverse();
+        std::array<double, 36UL> get_covarince(double distance, double angle) {
+            double d_scale = 0.05;
+            double base_xy = 0.02;
+            double base_yaw = 0.01;
+            double d_power = 2.0;
+            double a_scale = 0.5;
+            double max_xy = 2.0;
+            double max_yaw = 1.5;
 
-            geometry_msgs::msg::TransformStamped out;
+            double dist_term = d_scale * pow(distance, d_power);
+            double angle_term = a_scale * abs(tan(angle));
+            double stddev_xy = std::min(base_xy + dist_term + angle_term, max_xy);
+            double stddev_yaw = std::min(base_yaw + 0.5 * dist_term + angle_term, max_yaw);
+
+            double var_xy = pow(stddev_xy, 2);
+            double var_yaw = pow(stddev_yaw, 2);
+
+            std::array<double, 36UL> cov = {
+                var_xy, 0.0, 0.0, 0.0, 0.0, 0.0,
+                0.0, var_xy, 0.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 1E6, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 1E6, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0, 1E6, 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, var_yaw
+            };
+
+            return cov;
+        }
+
+        void publish_pose_estimate(int id, geometry_msgs::msg::TransformStamped & tf) {
+            tf2::Transform base_tag;
+            tf2::fromMsg(tf.transform, base_tag);
+            tf2::Transform map_tag = tag_map[id];
+            tf2::Transform map_base = map_tag * base_tag.inverse();
+            // filtered_transform(out);
+
+            double distance = sqrt(
+                pow(tf.transform.translation.x, 2) + 
+                pow(tf.transform.translation.y, 2) + 
+                pow(tf.transform.translation.z, 2)
+            );
+
+            double angle = base_tag.inverse().getRotation().getAngle();
+
+            geometry_msgs::msg::Transform map_base_msg = tf2::toMsg(map_base);
+            geometry_msgs::msg::PoseWithCovarianceStamped out;
             out.header.stamp = this->now();
             out.header.frame_id = "map";
-            out.child_frame_id = "odom";
-            out.transform = tf2::toMsg(map_odom);
+            out.pose.pose.position.x = map_base_msg.translation.x;
+            out.pose.pose.position.y = map_base_msg.translation.y;
+            out.pose.pose.position.z = map_base_msg.translation.z;
+            out.pose.pose.orientation = map_base_msg.rotation;
+            out.pose.covariance = get_covarince(distance, angle);
 
-            filtered_transform(out);
-
-            tf_broadcaster->sendTransform(out);
+            pose_pub->publish(out);
         }
 
         rclcpp::TimerBase::SharedPtr timer;
+        rclcpp::Publisher<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr pose_pub;
         std::unique_ptr<tf2_ros::Buffer> tf_buffer;
         std::shared_ptr<tf2_ros::TransformListener> tf_listener;
         std::shared_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster;
