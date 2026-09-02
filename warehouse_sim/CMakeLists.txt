@@ -17,6 +17,7 @@ install(DIRECTORY
   urdf
   config
   rviz
+  models
   DESTINATION share/${PROJECT_NAME}
 )
 

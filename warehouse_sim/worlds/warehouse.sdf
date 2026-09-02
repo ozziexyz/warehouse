@@ -334,5 +334,1896 @@
         </visual>
       </link>
     </model>
+        <!-- 63 floor AprilTags on the 7x9 path-planner grid -->
+    <model name="floor_tag_0">
+      <static>true</static>
+      <pose>-2.0000 4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-0.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_1">
+      <static>true</static>
+      <pose>-1.0000 4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-1.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_2">
+      <static>true</static>
+      <pose>0.0000 4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-2.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_3">
+      <static>true</static>
+      <pose>1.0000 4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-3.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_4">
+      <static>true</static>
+      <pose>2.0000 4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-4.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_5">
+      <static>true</static>
+      <pose>3.0000 4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-5.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_6">
+      <static>true</static>
+      <pose>4.0000 4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-6.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_7">
+      <static>true</static>
+      <pose>-2.0000 3.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-7.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_8">
+      <static>true</static>
+      <pose>-1.0000 3.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-8.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_9">
+      <static>true</static>
+      <pose>0.0000 3.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-9.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_10">
+      <static>true</static>
+      <pose>1.0000 3.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-10.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_11">
+      <static>true</static>
+      <pose>2.0000 3.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-11.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_12">
+      <static>true</static>
+      <pose>3.0000 3.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-12.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_13">
+      <static>true</static>
+      <pose>4.0000 3.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-13.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_14">
+      <static>true</static>
+      <pose>-2.0000 2.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-14.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_15">
+      <static>true</static>
+      <pose>-1.0000 2.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-15.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_16">
+      <static>true</static>
+      <pose>0.0000 2.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-16.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_17">
+      <static>true</static>
+      <pose>1.0000 2.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-17.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_18">
+      <static>true</static>
+      <pose>2.0000 2.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-18.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_19">
+      <static>true</static>
+      <pose>3.0000 2.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-19.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_20">
+      <static>true</static>
+      <pose>4.0000 2.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-20.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_21">
+      <static>true</static>
+      <pose>-2.0000 1.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-21.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_22">
+      <static>true</static>
+      <pose>-1.0000 1.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-22.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_23">
+      <static>true</static>
+      <pose>0.0000 1.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-23.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_24">
+      <static>true</static>
+      <pose>1.0000 1.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-24.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_25">
+      <static>true</static>
+      <pose>2.0000 1.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-25.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_26">
+      <static>true</static>
+      <pose>3.0000 1.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-26.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_27">
+      <static>true</static>
+      <pose>4.0000 1.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-27.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_28">
+      <static>true</static>
+      <pose>-2.0000 0.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-28.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_29">
+      <static>true</static>
+      <pose>-1.0000 0.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-29.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_30">
+      <static>true</static>
+      <pose>0.0000 0.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-30.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_31">
+      <static>true</static>
+      <pose>1.0000 0.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-31.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_32">
+      <static>true</static>
+      <pose>2.0000 0.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-32.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_33">
+      <static>true</static>
+      <pose>3.0000 0.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-33.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_34">
+      <static>true</static>
+      <pose>4.0000 0.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-34.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_35">
+      <static>true</static>
+      <pose>-2.0000 -1.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-35.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_36">
+      <static>true</static>
+      <pose>-1.0000 -1.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-36.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_37">
+      <static>true</static>
+      <pose>0.0000 -1.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-37.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_38">
+      <static>true</static>
+      <pose>1.0000 -1.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-38.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_39">
+      <static>true</static>
+      <pose>2.0000 -1.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-39.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_40">
+      <static>true</static>
+      <pose>3.0000 -1.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-40.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_41">
+      <static>true</static>
+      <pose>4.0000 -1.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-41.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_42">
+      <static>true</static>
+      <pose>-2.0000 -2.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-42.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_43">
+      <static>true</static>
+      <pose>-1.0000 -2.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-43.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_44">
+      <static>true</static>
+      <pose>0.0000 -2.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-44.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_45">
+      <static>true</static>
+      <pose>1.0000 -2.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-45.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_46">
+      <static>true</static>
+      <pose>2.0000 -2.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-46.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_47">
+      <static>true</static>
+      <pose>3.0000 -2.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-47.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_48">
+      <static>true</static>
+      <pose>4.0000 -2.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-48.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_49">
+      <static>true</static>
+      <pose>-2.0000 -3.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-49.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_50">
+      <static>true</static>
+      <pose>-1.0000 -3.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-50.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_51">
+      <static>true</static>
+      <pose>0.0000 -3.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-51.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_52">
+      <static>true</static>
+      <pose>1.0000 -3.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-52.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_53">
+      <static>true</static>
+      <pose>2.0000 -3.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-53.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_54">
+      <static>true</static>
+      <pose>3.0000 -3.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-54.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_55">
+      <static>true</static>
+      <pose>4.0000 -3.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-55.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_56">
+      <static>true</static>
+      <pose>-2.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-56.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_57">
+      <static>true</static>
+      <pose>-1.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-57.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_58">
+      <static>true</static>
+      <pose>0.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-58.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_59">
+      <static>true</static>
+      <pose>1.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-59.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_60">
+      <static>true</static>
+      <pose>2.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-60.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_61">
+      <static>true</static>
+      <pose>3.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-61.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_62">
+      <static>true</static>
+      <pose>4.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-62.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.55 0.55 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
   </world>
 </sdf>
