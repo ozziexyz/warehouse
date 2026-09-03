@@ -70,18 +70,6 @@ def generate_launch_description():
         output='screen',
     )
 
-    front_camera_bridge = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        arguments=[
-            '/front_camera@sensor_msgs/msg/Image@gz.msgs.Image',
-        ],
-        remappings=[
-            ('/front_camera', '/front_camera/image_raw'),
-        ],
-        output='screen',
-    )
-
     rear_camera_bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -90,6 +78,18 @@ def generate_launch_description():
         ],
         remappings=[
             ('/rear_camera', '/rear_camera/image_raw'),
+        ],
+        output='screen',
+    )
+
+    front_lidar_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=[
+            '/front_lidar@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
+        ],
+        remappings=[
+            ('/front_lidar', '/front_lidar/scan'),
         ],
         output='screen',
     )
@@ -177,6 +177,22 @@ def generate_launch_description():
         ]
     )
 
+    lidar_robot_pub = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='static_tf_pub_base_to_lidar',
+        arguments=[
+            '--x', '0.0',
+            '--y', '0.0',
+            '--z', '0.0',
+            '--roll', '0.0',
+            '--pitch', '0.0',
+            '--yaw', '0.0',
+            '--frame-id', 'front_lidar_link',
+            '--child-frame-id', 'warehouse_robot/base_footprint/front_lidar'
+        ]
+    )
+
     delayed_joint_state_broadcaster_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=spawn_robot,
@@ -206,8 +222,9 @@ def generate_launch_description():
         clock_bridge,
         gt_map_pub,
         pose_bridge,
-        front_camera_bridge,
         rear_camera_bridge,
+        front_lidar_bridge,
+        lidar_robot_pub,
         imu_bridge,
         robot_state_publisher,
         spawn_robot,
