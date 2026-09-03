@@ -60,6 +60,16 @@ def generate_launch_description():
         output='screen',
     )
 
+    pose_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=['/model/warehouse_robot/pose@geometry_msgs/msg/PoseStamped[gz.msgs.Pose'],
+        remappings=[
+            ('/model/warehouse_robot/pose', '/ground_truth/pose'),
+        ],
+        output='screen',
+    )
+
     front_camera_bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -151,6 +161,22 @@ def generate_launch_description():
         output='screen',
     )
 
+    gt_map_pub = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='static_tf_pub_base_to_lidar',
+        arguments=[
+            '--x', '0.0',
+            '--y', '0.0',
+            '--z', '0.0',
+            '--roll', '0.0',
+            '--pitch', '0.0',
+            '--yaw', '0.0',
+            '--frame-id', 'warehouse',
+            '--child-frame-id', 'map'
+        ]
+    )
+
     delayed_joint_state_broadcaster_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=spawn_robot,
@@ -178,6 +204,8 @@ def generate_launch_description():
         set_gz_resource_path,
         gz_sim,
         clock_bridge,
+        gt_map_pub,
+        pose_bridge,
         front_camera_bridge,
         rear_camera_bridge,
         imu_bridge,
