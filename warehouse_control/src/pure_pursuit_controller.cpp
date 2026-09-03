@@ -36,6 +36,8 @@ class PurePursuitController : public rclcpp::Node {
             turn_in_place_w = get_parameter("turn_in_place_w").as_double();
             declare_parameter<double>("max_turn", 70.0 * M_PI / 180.0);
             max_turn = get_parameter("max_turn").as_double();
+            declare_parameter<bool>("use_ground_truth", false);
+            use_ground_truth = get_parameter("use_ground_truth").as_bool();
 
             tf_buffer = std::make_unique<tf2_ros::Buffer>(this->get_clock());
             tf_listener = std::make_shared<tf2_ros::TransformListener>(*tf_buffer);
@@ -45,12 +47,22 @@ class PurePursuitController : public rclcpp::Node {
             rclcpp::SubscriptionOptions sub_options;
             sub_options.callback_group = sub_group;
 
-            odom_sub = create_subscription<nav_msgs::msg::Odometry>(
-                "/diff_drive_controller/odom",
-                10,
-                std::bind(&PurePursuitController::odom_callback, this, std::placeholders::_1),
-                sub_options
-            );
+            if(use_ground_truth) {
+                gt_pose_sub = create_subscription<geometry_msgs::msg::PoseStamped>(
+                    "/ground_truth/pose",
+                    10,
+                    std::bind(&PurePursuitController::gt_pose_callback, this, std::placeholders::_1),
+                    sub_options
+                );
+            } else {
+                odom_sub = create_subscription<nav_msgs::msg::Odometry>(
+                    "/diff_drive_controller/odom",
+                    10,
+                    std::bind(&PurePursuitController::odom_callback, this, std::placeholders::_1),
+                    sub_options
+                );
+            }
+    
             action_server = rclcpp_action::create_server<FollowPath>(
                 this,
                 "/follow_path",
@@ -67,6 +79,11 @@ class PurePursuitController : public rclcpp::Node {
         void odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {
             std::lock_guard<std::mutex> lock(odom_mtx);
             odom = msg;
+        }
+
+        void gt_pose_callback(const geometry_msgs::msg::PoseStamped::SharedPtr msg) {
+            std::lock_guard<std::mutex> lock(gt_pose_mtx);
+            gt_pose = msg;
         }
 
         rclcpp_action::GoalResponse handle_goal(
@@ -102,6 +119,11 @@ class PurePursuitController : public rclcpp::Node {
             return odom;
         }
 
+        geometry_msgs::msg::PoseStamped::SharedPtr get_pose() {
+            std::lock_guard<std::mutex> lock(gt_pose_mtx);
+            return gt_pose;
+        }
+
         double desired_velocity(double d) {
             double scale = 1.0;
             double slowdown_distance = 10 * goal_tolerance;
@@ -135,8 +157,16 @@ class PurePursuitController : public rclcpp::Node {
             auto feedback = std::make_shared<FollowPath::Feedback>();
             auto result = std::make_shared<FollowPath::Result>();
 
-            nav_msgs::msg::Odometry::SharedPtr current_odom = get_odom();
-            double goal_distance = distance(current_odom->pose.pose.position, waypoints.back().pose.position);
+            double goal_distance;
+            geometry_msgs::msg::Pose current_pose;
+
+            if (use_ground_truth) {
+                current_pose = get_pose()->pose;
+            } else {
+                current_pose = get_odom()->pose.pose;
+            }
+
+            goal_distance = distance(current_pose.position, waypoints.back().pose.position);
 
             while(goal_distance > goal_tolerance) {
                 if (goal_handle->is_canceling()) {
@@ -146,10 +176,14 @@ class PurePursuitController : public rclcpp::Node {
                     return;
                 }
 
-                current_odom = get_odom();
+                if(use_ground_truth) {
+                    current_pose = get_pose()->pose;
+                } else {
+                    current_pose = get_odom()->pose.pose;  
+                }
 
-                geometry_msgs::msg::Point robot_pos = current_odom->pose.pose.position;
-                geometry_msgs::msg::Quaternion robot_rot = current_odom->pose.pose.orientation;
+                geometry_msgs::msg::Point robot_pos = current_pose.position;
+                geometry_msgs::msg::Quaternion robot_rot = current_pose.orientation;
                 geometry_msgs::msg::Point target;
             
                 for (int i = target_index; i < waypoints.size(); i++) {
@@ -195,14 +229,14 @@ class PurePursuitController : public rclcpp::Node {
                     cmd_vel.twist.angular.z = linear_velocity * k;
                 }
 
-                cmd_vel.header.stamp = current_odom->header.stamp;
+                cmd_vel.header.stamp = get_clock()->now();
                 cmd_vel_pub->publish(cmd_vel);
 
                 loop_rate.sleep();
             }
 
             geometry_msgs::msg::TwistStamped cmd_vel;
-            cmd_vel.header.stamp = current_odom->header.stamp;
+            cmd_vel.header.stamp = get_clock()->now();
             cmd_vel_pub->publish(cmd_vel);
 
             if (rclcpp::ok()) {
@@ -217,11 +251,14 @@ class PurePursuitController : public rclcpp::Node {
         }
 
         rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub;
+        rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr gt_pose_sub;
         rclcpp_action::Server<FollowPath>::SharedPtr action_server;
         rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr cmd_vel_pub;
         rclcpp::CallbackGroup::SharedPtr sub_group, action_group;
         nav_msgs::msg::Odometry::SharedPtr odom;
         std::mutex odom_mtx;
+        geometry_msgs::msg::PoseStamped::SharedPtr gt_pose;
+        std::mutex gt_pose_mtx;
         std::unique_ptr<tf2_ros::Buffer> tf_buffer;
         std::shared_ptr<tf2_ros::TransformListener> tf_listener;
         int target_index = 0;
@@ -231,6 +268,7 @@ class PurePursuitController : public rclcpp::Node {
         double goal_tolerance;
         double turn_in_place_w;
         double max_turn;
+        bool use_ground_truth;
 };
 
 int main(int argc, char ** argv) {

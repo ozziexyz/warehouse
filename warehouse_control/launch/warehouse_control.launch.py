@@ -23,7 +23,8 @@ def generate_launch_description():
             'goal_tolerance': 0.01,
             'loop_rate': 10.0,
             'turn_in_place_w': 1.0,
-            'max_turn': 90 * math.pi / 180
+            'max_turn': 90 * math.pi / 180,
+            'use_ground_truth': True
         }],
     )
 
