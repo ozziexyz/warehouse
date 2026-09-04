@@ -177,6 +177,11 @@ def generate_launch_description():
         ]
     )
 
+    pose_to_tf = Node(
+        package='warehouse_sim',
+        executable='pose_to_tf.py'
+    )
+
     lidar_robot_pub = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
@@ -192,6 +197,22 @@ def generate_launch_description():
             '--child-frame-id', 'warehouse_robot/base_footprint/front_lidar'
         ]
     )
+
+    gt_base_pub = Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            name='static_tf_pub_base_to_lidar',
+            arguments=[
+                '--x', '0.0',
+                '--y', '0.0',
+                '--z', '0.0',
+                '--roll', '0.0',
+                '--pitch', '0.0',
+                '--yaw', '0.0',
+                '--frame-id', 'ground_truth',
+                '--child-frame-id', 'base_footprint'
+            ]
+        )
 
     delayed_joint_state_broadcaster_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
@@ -221,9 +242,11 @@ def generate_launch_description():
         gz_sim,
         clock_bridge,
         gt_map_pub,
+        pose_to_tf,
         pose_bridge,
         rear_camera_bridge,
         front_lidar_bridge,
+        gt_base_pub,
         lidar_robot_pub,
         imu_bridge,
         robot_state_publisher,

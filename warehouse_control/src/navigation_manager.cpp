@@ -30,6 +30,11 @@ class NavigationManager : public rclcpp::Node {
                 10,
                 std::bind(&NavigationManager::odom_callback, this, std::placeholders::_1)
             );
+            pose_sub = create_subscription<geometry_msgs::msg::PoseStamped> (
+                "/ground_truth/pose",
+                10,
+                std::bind(&NavigationManager::pose_callback, this, std::placeholders::_1)
+            );
             path_pub = create_publisher<nav_msgs::msg::Path>("/path", 10);
             robot_state_client = create_client<SetRobotState>("/robot_state/set", 10);
             path_planner_client = create_client<GeneratePath>("/generate_path", 10);
@@ -55,14 +60,19 @@ class NavigationManager : public rclcpp::Node {
             goal_pose = msg;
 
             auto request = std::make_shared<GeneratePath::Request>();
-            request->start.header.frame_id = "/odom";
-            request->start.pose = odom.pose.pose;
+            request->start.header.frame_id = "/map";
+            // request->start.pose = odom.pose.pose;
+            request->start.pose = gt_pose.pose;
             request->goal = goal_pose;
 
             path_planner_client->async_send_request(
                 request,
                 std::bind(&NavigationManager::generate_path_response_callback, this, std::placeholders::_1)
             );
+        }
+
+        void pose_callback(const geometry_msgs::msg::PoseStamped & msg) {
+            gt_pose = msg;
         }
 
         void generate_path_response_callback(rclcpp::Client<GeneratePath>::SharedFuture future) {
@@ -91,6 +101,7 @@ class NavigationManager : public rclcpp::Node {
         }
 
         rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr goal_sub;
+        rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr pose_sub;
         rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub;
         rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_pub;
         rclcpp_action::Client<warehouse_interfaces::action::FollowPath>::SharedPtr controller_client;
@@ -98,6 +109,7 @@ class NavigationManager : public rclcpp::Node {
         rclcpp::Client<GeneratePath>::SharedPtr path_planner_client;
         rclcpp::TimerBase::SharedPtr timer;
         geometry_msgs::msg::PoseStamped goal_pose;
+        geometry_msgs::msg::PoseStamped gt_pose;
         nav_msgs::msg::Path path;
         nav_msgs::msg::Odometry odom;
 };

@@ -222,7 +222,7 @@ class PurePursuitController : public rclcpp::Node {
 
                 if(std::abs(heading_error) > max_turn) {
                     cmd_vel.twist.linear.x = 0.0;
-                    cmd_vel.twist.angular.z = turn_in_place_w;
+                    cmd_vel.twist.angular.z = turn_in_place_w * (heading_error > 0) - (heading_error < 0);
                 } else {
                     double linear_velocity = desired_velocity(goal_distance);
                     cmd_vel.twist.linear.x = linear_velocity;
