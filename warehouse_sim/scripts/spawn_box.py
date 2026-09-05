@@ -23,6 +23,23 @@ class SpawnBox(Node):
         topic = self.get_parameter('topic').value
 
         self._spawn_count = 0
+        self.locations = [
+            (-1, 4),
+            (0, 4),
+            (1, 4),
+            (-1, 2),
+            (0, 2),
+            (1, 2),
+            (-1, 0),
+            (0, 0),
+            (1, 0),
+            (-1, -2),
+            (0, -2),
+            (1, -2),
+            (-1, -4),
+            (0, -4),
+            (1, -4),
+        ]
 
         self.sub = self.create_subscription(
             Int32,
@@ -38,9 +55,9 @@ class SpawnBox(Node):
 
     def on_msg(self, msg: Int32):
         self.get_logger().info(f"Received {msg.data} -> spawning object")
-        self.spawn_object()
+        self.spawn_object(msg.data)
 
-    def spawn_object(self):
+    def spawn_object(self, location):
         entity_name = f"{self.entity_prefix}_{self._spawn_count}"
         self._spawn_count += 1
 
@@ -49,6 +66,9 @@ class SpawnBox(Node):
             '-world', self.world_name,
             '-file', self.sdf_path,
             '-name', entity_name,
+            '-x', str(self.locations[location][0]),
+            '-y', str(self.locations[location][1]),
+            '-z', '6',
         ]
 
         try:
