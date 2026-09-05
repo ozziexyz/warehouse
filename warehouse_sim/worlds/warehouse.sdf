@@ -51,14 +51,14 @@
         <collision name="collision">
           <geometry>
             <box>
-              <size>4 1 2</size>
+              <size>4 0.75 2</size>
             </box>
           </geometry>
         </collision>
         <visual name="visual">
           <geometry>
             <box>
-              <size>4 1 2</size>
+              <size>4 0.75 2</size>
             </box>
           </geometry>
           <material>
@@ -77,14 +77,14 @@
         <collision name="collision">
           <geometry>
             <box>
-              <size>4 1 2</size>
+              <size>4 0.75 2</size>
             </box>
           </geometry>
         </collision>
         <visual name="visual">
           <geometry>
             <box>
-              <size>4 1 2</size>
+              <size>4 0.75 2</size>
             </box>
           </geometry>
           <material>
@@ -103,14 +103,14 @@
         <collision name="collision">
           <geometry>
             <box>
-              <size>4 1 2</size>
+              <size>4 0.75 2</size>
             </box>
           </geometry>
         </collision>
         <visual name="visual">
           <geometry>
             <box>
-              <size>4 1 2</size>
+              <size>4 0.75 2</size>
             </box>
           </geometry>
           <material>
@@ -129,14 +129,14 @@
         <collision name="collision">
           <geometry>
             <box>
-              <size>4 1 2</size>
+              <size>4 0.75 2</size>
             </box>
           </geometry>
         </collision>
         <visual name="visual">
           <geometry>
             <box>
-              <size>4 1 2</size>
+              <size>4 0.75 2</size>
             </box>
           </geometry>
           <material>

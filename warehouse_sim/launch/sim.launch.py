@@ -20,6 +20,7 @@ def generate_launch_description():
     controller_config_path = os.path.join(pkg_warehouse_sim, 'config', 'diff_drive_controller.yaml')
     rviz_config_path = os.path.join(pkg_warehouse_sim, 'rviz', 'warehouse_sim.rviz')
     models_path = os.path.join(pkg_warehouse_sim, 'models')
+    box_sdf_path = os.path.join(models_path, 'brown_box', 'model.sdf')
 
     # So `model://...` URIs in the world file (e.g. the floor AprilTag models) resolve
     gz_resource_path = os.pathsep.join(filter(None, [models_path, os.environ.get('GZ_SIM_RESOURCE_PATH', '')]))
@@ -60,14 +61,12 @@ def generate_launch_description():
         output='screen',
     )
 
-    front_camera_bridge = Node(
+    pose_bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
-        arguments=[
-            '/front_camera@sensor_msgs/msg/Image@gz.msgs.Image',
-        ],
+        arguments=['/model/warehouse_robot/pose@geometry_msgs/msg/PoseStamped[gz.msgs.Pose'],
         remappings=[
-            ('/front_camera', '/front_camera/image_raw'),
+            ('/model/warehouse_robot/pose', '/ground_truth/pose'),
         ],
         output='screen',
     )
@@ -80,6 +79,18 @@ def generate_launch_description():
         ],
         remappings=[
             ('/rear_camera', '/rear_camera/image_raw'),
+        ],
+        output='screen',
+    )
+
+    front_lidar_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=[
+            '/front_lidar@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
+        ],
+        remappings=[
+            ('/front_lidar', '/front_lidar/scan'),
         ],
         output='screen',
     )
@@ -142,6 +153,17 @@ def generate_launch_description():
         output='screen',
     )
 
+    spawn_box = Node(
+        package='warehouse_sim',
+        executable='spawn_box.py',
+        parameters=[{
+            'sdf_path': box_sdf_path,
+            'world_name': 'warehouse',
+            'use_sim_time': True,
+        }],
+        output='screen',
+    )
+
     rviz = Node(
         package='rviz2',
         executable='rviz2',
@@ -150,6 +172,59 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration('use_rviz')),
         output='screen',
     )
+
+    gt_map_pub = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='static_tf_pub_base_to_lidar',
+        arguments=[
+            '--x', '0.0',
+            '--y', '0.0',
+            '--z', '0.0',
+            '--roll', '0.0',
+            '--pitch', '0.0',
+            '--yaw', '0.0',
+            '--frame-id', 'warehouse',
+            '--child-frame-id', 'map'
+        ]
+    )
+
+    pose_to_tf = Node(
+        package='warehouse_sim',
+        executable='pose_to_tf.py'
+    )
+
+    lidar_robot_pub = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='static_tf_pub_base_to_lidar',
+        arguments=[
+            '--x', '0.0',
+            '--y', '0.0',
+            '--z', '0.0',
+            '--roll', '0.0',
+            '--pitch', '0.0',
+            '--yaw', '0.0',
+            '--frame-id', 'front_lidar_link',
+            '--child-frame-id', 'warehouse_robot/base_footprint/front_lidar'
+        ]
+    )
+
+    gt_base_pub = Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            name='static_tf_pub_base_to_lidar',
+            arguments=[
+                '--x', '0.0',
+                '--y', '0.0',
+                '--z', '0.0',
+                '--roll', '0.0',
+                '--pitch', '0.0',
+                '--yaw', '0.0',
+                '--frame-id', 'ground_truth',
+                '--child-frame-id', 'base_footprint'
+            ]
+        )
 
     delayed_joint_state_broadcaster_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
@@ -178,8 +253,13 @@ def generate_launch_description():
         set_gz_resource_path,
         gz_sim,
         clock_bridge,
-        front_camera_bridge,
+        gt_map_pub,
+        pose_to_tf,
+        pose_bridge,
         rear_camera_bridge,
+        front_lidar_bridge,
+        gt_base_pub,
+        lidar_robot_pub,
         imu_bridge,
         robot_state_publisher,
         spawn_robot,
@@ -187,5 +267,6 @@ def generate_launch_description():
         delayed_diff_drive_controller_spawner,
         delayed_flap_controller_spawner,
         obstacle_marker_publisher,
+        spawn_box,
         rviz,
     ])

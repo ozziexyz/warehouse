@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<sdf version="1.9">
+  <model name="brown_box">
+    <static>false</static>
+    <link name="link">
+      <inertial>
+        <mass>1.0</mass>
+        <inertia>
+          <ixx>0.0167</ixx>
+          <iyy>0.0167</iyy>
+          <izz>0.0167</izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.3 0.3 0.3</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.545 0.271 0.075 1</ambient>
+          <diffuse>0.545 0.271 0.075 1</diffuse>
+          <specular>0.1 0.1 0.1 1</specular>
+        </material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.3 0.3 0.3</size>
+          </box>
+        </geometry>
+      </collision>
+    </link>
+  </model>
+</sdf>

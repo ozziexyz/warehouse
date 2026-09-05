@@ -6,7 +6,7 @@
 
   <!-- Chassis -->
   <xacro:property name="base_length" value="0.75"/>
-  <xacro:property name="base_width" value="0.75"/>
+  <xacro:property name="base_width" value="0.65"/>
   <xacro:property name="base_height" value="0.25"/>
   <xacro:property name="base_mass" value="16.0"/>
 
@@ -26,9 +26,14 @@
   <xacro:property name="cage_wall_mass" value="0.5"/>
   <xacro:property name="cage_flap_mass" value="0.3"/>
 
-  <!-- Front RGB camera -->
+  <!-- Rear RGB camera -->
   <xacro:property name="camera_size" value="0.04"/>
   <xacro:property name="camera_mass" value="0.05"/>
+
+  <!-- Front 2D lidar -->
+  <xacro:property name="lidar_radius" value="0.05"/>
+  <xacro:property name="lidar_height" value="0.06"/>
+  <xacro:property name="lidar_mass" value="0.15"/>
 
   <!-- IMU -->
   <xacro:property name="imu_size" value="0.02"/>
@@ -259,63 +264,57 @@
     <material>Gazebo/Black</material>
   </gazebo>
 
-  <!-- Front camera: mounted flush on the chassis front face, below the cage, pointing straight out along +x -->
-  <link name="front_camera_link">
+  <!-- Front lidar: centered on the chassis front face, below the cage, so half the puck
+       sticks out past the front edge -->
+  <link name="front_lidar_link">
     <visual>
       <geometry>
-        <box size="${camera_size} ${camera_size} ${camera_size}"/>
+        <cylinder radius="${lidar_radius}" length="${lidar_height}"/>
       </geometry>
       <material name="wheel_black"/>
     </visual>
     <collision>
       <geometry>
-        <box size="${camera_size} ${camera_size} ${camera_size}"/>
+        <cylinder radius="${lidar_radius}" length="${lidar_height}"/>
       </geometry>
     </collision>
     <inertial>
-      <mass value="${camera_mass}"/>
+      <mass value="${lidar_mass}"/>
       <inertia
-        ixx="${camera_mass / 6.0 * camera_size*camera_size}" ixy="0" ixz="0"
-        iyy="${camera_mass / 6.0 * camera_size*camera_size}" iyz="0"
-        izz="${camera_mass / 6.0 * camera_size*camera_size}"/>
+        ixx="${lidar_mass / 12.0 * (3*lidar_radius*lidar_radius + lidar_height*lidar_height)}" ixy="0" ixz="0"
+        iyy="${lidar_mass / 12.0 * (3*lidar_radius*lidar_radius + lidar_height*lidar_height)}" iyz="0"
+        izz="${lidar_mass / 2.0 * lidar_radius*lidar_radius}"/>
     </inertial>
   </link>
 
-  <joint name="front_camera_joint" type="fixed">
+  <joint name="front_lidar_joint" type="fixed">
     <parent link="base_link"/>
-    <child link="front_camera_link"/>
-    <origin xyz="${base_length/2 + camera_size/2} 0 0" rpy="0 0 0"/>
+    <child link="front_lidar_link"/>
+    <origin xyz="${base_length/2} 0 0" rpy="0 0 0"/>
   </joint>
 
-  <!-- Optical frame: REP 103 convention (Z forward, X right, Y down), used for image/camera_info -->
-  <link name="front_camera_optical_frame"/>
-
-  <joint name="front_camera_optical_joint" type="fixed">
-    <parent link="front_camera_link"/>
-    <child link="front_camera_optical_frame"/>
-    <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
-  </joint>
-
-  <gazebo reference="front_camera_link">
+  <gazebo reference="front_lidar_link">
     <material>Gazebo/Black</material>
-    <sensor name="front_camera" type="camera">
-      <camera>
-        <horizontal_fov>1.4</horizontal_fov>
-        <image>
-          <width>640</width>
-          <height>480</height>
-        </image>
-        <clip>
-          <near>0.05</near>
-          <far>50</far>
-        </clip>
-        <!-- Sensor is aimed straight ahead for now; revisit if the mount angle changes -->
-        <optical_frame_id>front_camera_optical_frame</optical_frame_id>
-      </camera>
+    <sensor name="front_lidar" type="gpu_lidar">
+      <lidar>
+        <scan>
+          <horizontal>
+            <samples>640</samples>
+            <resolution>1</resolution>
+            <min_angle>${-2.0/3.0*pi}</min_angle>
+            <max_angle>${2.0/3.0*pi}</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.1</min>
+          <max>25.0</max>
+          <resolution>0.01</resolution>
+        </range>
+      </lidar>
       <always_on>true</always_on>
-      <update_rate>15</update_rate>
+      <update_rate>10</update_rate>
       <visualize>true</visualize>
-      <topic>front_camera</topic>
+      <topic>front_lidar</topic>
     </sensor>
   </gazebo>
 
@@ -440,6 +439,22 @@
   <gazebo>
     <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
       <parameters>$(arg controller_config_path)</parameters>
+    </plugin>
+  </gazebo>
+
+  <!-- Ground-truth pose for testing: publishes only the robot model's pose (no links/
+       sensors/collisions) to /model/warehouse_robot/pose, bridged to ROS in sim.launch.py -->
+  <gazebo>
+    <plugin filename="gz-sim-pose-publisher-system" name="gz::sim::systems::PosePublisher">
+      <publish_model_pose>true</publish_model_pose>
+      <publish_link_pose>false</publish_link_pose>
+      <publish_nested_model_pose>false</publish_nested_model_pose>
+      <publish_collision_pose>false</publish_collision_pose>
+      <publish_visual_pose>false</publish_visual_pose>
+      <publish_sensor_pose>false</publish_sensor_pose>
+      <use_pose_vector_msg>false</use_pose_vector_msg>
+      <static_publisher>false</static_publisher>
+      <update_frequency>30</update_frequency>
     </plugin>
   </gazebo>
 

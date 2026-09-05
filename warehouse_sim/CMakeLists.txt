@@ -23,6 +23,8 @@ install(DIRECTORY
 
 install(PROGRAMS
   scripts/obstacle_marker_publisher.py
+  scripts/pose_to_tf.py
+  scripts/spawn_box.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

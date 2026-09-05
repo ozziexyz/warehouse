@@ -16,7 +16,7 @@ def generate_launch_description():
 
     camera_topic_arg = DeclareLaunchArgument(
         'camera_topic',
-        default_value='front_camera',
+        default_value='rear_camera',
         description='Base topic namespace of the camera to run AprilTag detection on',
     )
     camera_topic = LaunchConfiguration('camera_topic')

@@ -123,7 +123,6 @@ class PathPlanner : public rclcpp::Node {
             origin_x = get_parameter("origin_x").as_double();
             origin_y = get_parameter("origin_y").as_double();
             waypoint_density = get_parameter("waypoint_density").as_double();
-            
 
             grid = std::make_unique<AStarGrid>(grid_width, grid_height);
 
