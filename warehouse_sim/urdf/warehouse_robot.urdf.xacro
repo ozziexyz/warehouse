@@ -11,12 +11,12 @@
   <xacro:property name="base_mass" value="16.0"/>
 
   <!-- Drive wheels -->
-  <xacro:property name="wheel_radius" value="0.1"/>
+  <xacro:property name="wheel_radius" value="0.13"/>
   <xacro:property name="wheel_width" value="0.06"/>
   <xacro:property name="wheel_mass" value="0.75"/>
 
   <!-- Caster wheels -->
-  <xacro:property name="caster_radius" value="0.05"/>
+  <xacro:property name="caster_radius" value="0.065"/>
   <xacro:property name="caster_mass" value="0.2"/>
 
   <!-- Cargo cage: thin walls around the chassis, front wall has a hinged flap -->
@@ -29,6 +29,10 @@
   <!-- Rear RGB camera -->
   <xacro:property name="camera_size" value="0.04"/>
   <xacro:property name="camera_mass" value="0.05"/>
+
+  <!-- Bottom-facing camera, for reading floor AprilTags -->
+  <xacro:property name="bottom_camera_size" value="0.03"/>
+  <xacro:property name="bottom_camera_mass" value="0.03"/>
 
   <!-- Front 2D lidar -->
   <xacro:property name="lidar_radius" value="0.05"/>
@@ -375,6 +379,66 @@
       <update_rate>15</update_rate>
       <visualize>true</visualize>
       <topic>rear_camera</topic>
+    </sensor>
+  </gazebo>
+
+  <!-- Bottom camera: flush on the chassis underside, centered, pointing straight down
+       through the ground clearance gap to read floor AprilTags -->
+  <link name="bottom_camera_link">
+    <visual>
+      <geometry>
+        <box size="${bottom_camera_size} ${bottom_camera_size} ${bottom_camera_size}"/>
+      </geometry>
+      <material name="wheel_black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${bottom_camera_size} ${bottom_camera_size} ${bottom_camera_size}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${bottom_camera_mass}"/>
+      <inertia
+        ixx="${bottom_camera_mass / 6.0 * bottom_camera_size*bottom_camera_size}" ixy="0" ixz="0"
+        iyy="${bottom_camera_mass / 6.0 * bottom_camera_size*bottom_camera_size}" iyz="0"
+        izz="${bottom_camera_mass / 6.0 * bottom_camera_size*bottom_camera_size}"/>
+    </inertial>
+  </link>
+
+  <joint name="bottom_camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="bottom_camera_link"/>
+    <origin xyz="0 0 ${-(base_height/2 + bottom_camera_size/2)}" rpy="0 ${pi/2} 0"/>
+  </joint>
+
+  <link name="bottom_camera_optical_frame"/>
+
+  <joint name="bottom_camera_optical_joint" type="fixed">
+    <parent link="bottom_camera_link"/>
+    <child link="bottom_camera_optical_frame"/>
+    <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+  </joint>
+
+  <gazebo reference="bottom_camera_link">
+    <material>Gazebo/Black</material>
+    <sensor name="bottom_camera" type="camera">
+      <camera>
+        <horizontal_fov>1.9</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+        </image>
+        <clip>
+          <!-- Lens sits only a couple cm off the floor, so the near plane has to be tiny -->
+          <near>0.005</near>
+          <far>1.0</far>
+        </clip>
+        <optical_frame_id>bottom_camera_optical_frame</optical_frame_id>
+      </camera>
+      <always_on>true</always_on>
+      <update_rate>15</update_rate>
+      <visualize>true</visualize>
+      <topic>bottom_camera</topic>
     </sensor>
   </gazebo>
 
