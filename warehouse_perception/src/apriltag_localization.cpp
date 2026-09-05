@@ -10,6 +10,7 @@
 #include <chrono>
 #include <cmath>
 #include <unordered_map>
+#include <apriltag_msgs/msg/april_tag_detection_array.hpp>
 
 using namespace std::chrono_literals;
 
@@ -28,7 +29,7 @@ class AprilTagLocalization : public rclcpp::Node {
             declare_parameter<double>("tag_frame_correction_roll", M_PI_2);
             double correction_roll = this->get_parameter("tag_frame_correction_roll").as_double();
             tf2::Quaternion tag_frame_correction;
-            tag_frame_correction.setRPY(correction_roll, 0.0, 0.0);
+            tag_frame_correction.setRPY(0.0, 0.0, -M_PI_2);
 
             for(auto id : tag_ids) {
                 std::string param = "tag_" + std::to_string(id) + "_pose";
@@ -37,7 +38,7 @@ class AprilTagLocalization : public rclcpp::Node {
                 tf2::Transform tf;
                 tf2::Vector3 t(tf_vec[0], tf_vec[1], tf_vec[2]);
                 tf2::Quaternion q(tf_vec[3], tf_vec[4], tf_vec[5], tf_vec[6]);
-                q = tag_frame_correction * q;
+                q = q * tag_frame_correction;
                 tf.setOrigin(t);
                 tf.setRotation(q);
                 tag_map[id] = tf;
@@ -46,14 +47,19 @@ class AprilTagLocalization : public rclcpp::Node {
             tf_buffer = std::make_unique<tf2_ros::Buffer>(this->get_clock());
             tf_listener = std::make_shared<tf2_ros::TransformListener>(*tf_buffer);
 
+            detection_sub = create_subscription<apriltag_msgs::msg::AprilTagDetectionArray>(
+                "/detections",
+                10,
+                std::bind(&AprilTagLocalization::detection_callback, this, std::placeholders::_1)
+            );
             timer = create_timer(0.1s, std::bind(&AprilTagLocalization::timer_callback, this));
             pose_pub = create_publisher<geometry_msgs::msg::PoseWithCovarianceStamped>("/apriltag/pose", 10);
         }
 
     private:
         void timer_callback() {
-            for(auto id : tag_ids) {
-                std::string tag_frame = "tag36h11:" + std::to_string(id);
+            for(auto tag : detections.detections) {
+                std::string tag_frame = "tag36h11:" + std::to_string(tag.id);
                 geometry_msgs::msg::TransformStamped odom_to_tag;
                 try {
                     odom_to_tag = tf_buffer->lookupTransform(
@@ -61,8 +67,7 @@ class AprilTagLocalization : public rclcpp::Node {
                 } catch (const tf2::TransformException &) {
                     continue;
                 }
-
-                publish_pose_estimate(id, odom_to_tag);
+                publish_pose_estimate(tag.id, odom_to_tag);
                 return;
             }
         }
@@ -71,6 +76,10 @@ class AprilTagLocalization : public rclcpp::Node {
             if(tf.transform.translation.z < 0) {
                 tf.transform.translation.z = 0;
             }
+        }
+
+        void detection_callback(const apriltag_msgs::msg::AprilTagDetectionArray& msg) {
+            detections = msg;
         }
 
         std::array<double, 36UL> get_covarince(double distance, double angle) {
@@ -119,7 +128,7 @@ class AprilTagLocalization : public rclcpp::Node {
 
             geometry_msgs::msg::Transform map_base_msg = tf2::toMsg(map_base);
             geometry_msgs::msg::PoseWithCovarianceStamped out;
-            out.header.stamp = this->now();
+            out.header.stamp = tf.header.stamp;
             out.header.frame_id = "map";
             out.pose.pose.position.x = map_base_msg.translation.x;
             out.pose.pose.position.y = map_base_msg.translation.y;
@@ -132,9 +141,11 @@ class AprilTagLocalization : public rclcpp::Node {
 
         rclcpp::TimerBase::SharedPtr timer;
         rclcpp::Publisher<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr pose_pub;
+        rclcpp::Subscription<apriltag_msgs::msg::AprilTagDetectionArray>::SharedPtr detection_sub;
         std::unique_ptr<tf2_ros::Buffer> tf_buffer;
         std::shared_ptr<tf2_ros::TransformListener> tf_listener;
         std::shared_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster;
+        apriltag_msgs::msg::AprilTagDetectionArray detections;
         std::vector<int64_t> tag_ids;
         std::unordered_map<int, tf2::Transform> tag_map;
 };

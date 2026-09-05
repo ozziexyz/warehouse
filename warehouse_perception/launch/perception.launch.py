@@ -69,7 +69,10 @@ def generate_launch_description():
         executable='ekf_node',
         name='local_ekf_node',
         output='screen',
-        parameters=[local_ekf_params]
+        parameters=[local_ekf_params],
+        remappings=[
+            ('odometry/filtered', '/odometry/local'),
+        ],
     )
 
     global_ekf_node = Node(
@@ -85,7 +88,7 @@ def generate_launch_description():
         rectify_node,
         apriltag_node,
         camera_info_publisher,
-        # apriltag_localization,
-        # local_ekf_node,
-        # global_ekf_node
+        apriltag_localization,
+        local_ekf_node,
+        global_ekf_node
     ])
