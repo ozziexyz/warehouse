@@ -33,6 +33,9 @@
   <!-- Bottom-facing camera, for reading floor AprilTags -->
   <xacro:property name="bottom_camera_size" value="0.03"/>
   <xacro:property name="bottom_camera_mass" value="0.03"/>
+  <!-- Height of the lens above the floor: bigger gap widens the footprint the camera
+       sees on the ground, so a tag stays in frame longer as the robot drives over it -->
+  <xacro:property name="bottom_camera_ground_gap" value="0.03"/>
 
   <!-- Front 2D lidar -->
   <xacro:property name="lidar_radius" value="0.05"/>
@@ -49,6 +52,7 @@
   <xacro:property name="wheel_z_offset" value="${wheel_radius - base_z}"/>
   <xacro:property name="caster_z_offset" value="${caster_radius - base_z}"/>
   <xacro:property name="caster_x_offset" value="${base_length / 2 - caster_radius - 0.02}"/>
+  <xacro:property name="bottom_camera_z_offset" value="${bottom_camera_ground_gap + bottom_camera_size/2 - base_z}"/>
   <xacro:property name="cage_base_z" value="${base_height / 2.0}"/>
   <xacro:property name="cage_front_upper_height" value="${cage_wall_height - cage_flap_height}"/>
 
@@ -408,7 +412,7 @@
   <joint name="bottom_camera_joint" type="fixed">
     <parent link="base_link"/>
     <child link="bottom_camera_link"/>
-    <origin xyz="0 0 ${-(base_height/2 + bottom_camera_size/2)}" rpy="0 ${pi/2} 0"/>
+    <origin xyz="0 0 ${bottom_camera_z_offset}" rpy="0 ${pi/2} 0"/>
   </joint>
 
   <link name="bottom_camera_optical_frame"/>
