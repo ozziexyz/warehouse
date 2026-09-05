@@ -20,6 +20,7 @@ def generate_launch_description():
     controller_config_path = os.path.join(pkg_warehouse_sim, 'config', 'diff_drive_controller.yaml')
     rviz_config_path = os.path.join(pkg_warehouse_sim, 'rviz', 'warehouse_sim.rviz')
     models_path = os.path.join(pkg_warehouse_sim, 'models')
+    box_sdf_path = os.path.join(models_path, 'brown_box', 'model.sdf')
 
     # So `model://...` URIs in the world file (e.g. the AprilTag pillar models) resolve
     gz_resource_path = os.pathsep.join(filter(None, [models_path, os.environ.get('GZ_SIM_RESOURCE_PATH', '')]))
@@ -152,6 +153,17 @@ def generate_launch_description():
         output='screen',
     )
 
+    spawn_box = Node(
+        package='warehouse_sim',
+        executable='spawn_box.py',
+        parameters=[{
+            'sdf_path': box_sdf_path,
+            'world_name': 'warehouse',
+            'use_sim_time': True,
+        }],
+        output='screen',
+    )
+
     rviz = Node(
         package='rviz2',
         executable='rviz2',
@@ -255,5 +267,6 @@ def generate_launch_description():
         delayed_diff_drive_controller_spawner,
         delayed_flap_controller_spawner,
         obstacle_marker_publisher,
+        spawn_box,
         rviz,
     ])
