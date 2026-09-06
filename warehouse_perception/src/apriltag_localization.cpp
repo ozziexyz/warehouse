@@ -82,19 +82,17 @@ class AprilTagLocalization : public rclcpp::Node {
             detections = msg;
         }
 
-        std::array<double, 36UL> get_covarince(double distance, double angle) {
+        std::array<double, 36UL> get_covarince(double distance) {
             double d_scale = 0.05;
             double base_xy = 0.02;
             double base_yaw = 0.01;
             double d_power = 2.0;
-            double a_scale = 0.5;
             double max_xy = 2.0;
             double max_yaw = 1.5;
 
             double dist_term = d_scale * pow(distance, d_power);
-            double angle_term = a_scale * abs(tan(angle));
-            double stddev_xy = std::min(base_xy + dist_term + angle_term, max_xy);
-            double stddev_yaw = std::min(base_yaw + 0.5 * dist_term + angle_term, max_yaw);
+            double stddev_xy = std::min(base_xy + dist_term, max_xy);
+            double stddev_yaw = std::min(base_yaw + 0.5 * dist_term, max_yaw);
 
             double var_xy = pow(stddev_xy, 2);
             double var_yaw = pow(stddev_yaw, 2);
@@ -124,8 +122,6 @@ class AprilTagLocalization : public rclcpp::Node {
                 pow(tf.transform.translation.z, 2)
             );
 
-            double angle = base_tag.inverse().getRotation().getAngle();
-
             geometry_msgs::msg::Transform map_base_msg = tf2::toMsg(map_base);
             geometry_msgs::msg::PoseWithCovarianceStamped out;
             out.header.stamp = tf.header.stamp;
@@ -134,7 +130,7 @@ class AprilTagLocalization : public rclcpp::Node {
             out.pose.pose.position.y = map_base_msg.translation.y;
             out.pose.pose.position.z = map_base_msg.translation.z;
             out.pose.pose.orientation = map_base_msg.rotation;
-            out.pose.covariance = get_covarince(distance, angle);
+            out.pose.covariance = get_covarince(distance);
 
             pose_pub->publish(out);
         }

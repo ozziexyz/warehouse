@@ -8,9 +8,10 @@ Panels:
         - /Status1
         - /TF1
         - /Odometry1
+        - /Image1
         - /PoseWithCovariance1
       Splitter Ratio: 0.5
-    Tree Height: 298
+    Tree Height: 200
   - Class: rviz_common/Selection
     Name: Selection
   - Class: rviz_common/Views
@@ -243,7 +244,7 @@ Visualization Manager:
         Value: /obstacle_markers
       Value: true
     - Class: rviz_default_plugins/Image
-      Enabled: false
+      Enabled: true
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -254,8 +255,8 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /rear_camera/image_raw
-      Value: false
+        Value: /bottom_camera/image_raw
+      Value: true
     - Alpha: 1
       Axes Length: 1
       Axes Radius: 0.10000000149011612
@@ -329,7 +330,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 9.433424949645996
+      Distance: 10.281990051269531
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -344,10 +345,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.0047953128814697
+      Pitch: 0.644795835018158
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz_default_plugins)
-      Yaw: 0.10366568714380264
+      Yaw: 0.36366304755210876
     Saved: ~
 Window Geometry:
   Displays:
@@ -357,7 +358,7 @@ Window Geometry:
   Hide Right Dock: false
   Image:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd00000001000000000000021e0000036cfc0200000004fb000000100044006900730070006c0061007900730100000056000001e80000012600fffffffb0000001200530065006c0065006300740069006f006e0100000247000000860000008600fffffffb0000000a0056006900650077007301000002d6000000ec000000ec00fffffffb0000000a0049006d0061006700650000000309000000b90000001e00ffffff000003510000036c00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000001000000000000021e0000036cfc0200000005fb000000100044006900730070006c0061007900730100000056000001860000012600fffffffb0000001200530065006c0065006300740069006f006e01000001e5000000aa0000008600fffffffb0000000a0056006900650077007301000002980000012a000000ec00fffffffb0000000a0049006d0061006700650000000309000000b90000001e00fffffffb0000000a0049006d0061006700650100000318000000aa0000000000000000000003510000036c00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Views:

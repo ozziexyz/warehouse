@@ -9,7 +9,8 @@ global_ekf_node:
     base_link_frame: base_footprint
     world_frame: map
     smooth_lagged_data: true
-    history_length: 0.5
+    history_length: 2.0
+    dynamic_process_noise_covariance: true
 
     odom0: /odometry/local
     odom0_config: [true,  true,  false,
@@ -32,5 +33,5 @@ global_ekf_node:
                    false, false, false,
                    false, false, false]
     pose0_differential: false
-    pose0_rejection_threshold: 5.0   # Mahalanobis distance, tune this
+    pose0_rejection_threshold: 10.0   # Mahalanobis distance, tune this
     pose0_queue_size: 5
