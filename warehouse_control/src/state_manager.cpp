@@ -30,7 +30,7 @@ class StateManager : public rclcpp::Node {
         void set_state_callback(const SetRobotState::Request::SharedPtr req, SetRobotState::Response::SharedPtr resp) {
             state = req->state;
             resp->success = true;
-            RCLCPP_INFO(get_logger(), "Robot state request successful: is_moving=%d", resp->success);
+            RCLCPP_INFO(get_logger(), "Robot state request successful: is_moving=%d", req->state.is_moving);
         }
 
         void timer_callback() {

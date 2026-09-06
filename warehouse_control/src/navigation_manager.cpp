@@ -87,7 +87,60 @@ class NavigationManager : public rclcpp::Node {
 
             FollowPath::Goal goal_msg;
             goal_msg.path = path;
-            controller_client->async_send_goal(goal_msg);
+
+            auto send_goal_options = rclcpp_action::Client<FollowPath>::SendGoalOptions();
+            send_goal_options.goal_response_callback =
+                std::bind(&NavigationManager::follow_path_goal_response_callback, this, std::placeholders::_1);
+            send_goal_options.feedback_callback =
+                std::bind(&NavigationManager::follow_path_feedback_callback, this, std::placeholders::_1, std::placeholders::_2);
+            send_goal_options.result_callback =
+                std::bind(&NavigationManager::follow_path_result_callback, this, std::placeholders::_1);
+
+            controller_client->async_send_goal(goal_msg, send_goal_options);
+        }
+
+        void follow_path_goal_response_callback(const rclcpp_action::ClientGoalHandle<FollowPath>::SharedPtr & goal_handle) {
+            if (!goal_handle) {
+                RCLCPP_ERROR(get_logger(), "Follow path goal was rejected by the controller");
+                return;
+            }
+            RCLCPP_INFO(get_logger(), "Follow path goal accepted by the controller");
+            
+            auto request = std::make_shared<SetRobotState::Request>();
+            request->state.is_moving = true;
+            auto future = robot_state_client->async_send_request(request);
+        }
+
+        void follow_path_feedback_callback(
+            rclcpp_action::ClientGoalHandle<FollowPath>::SharedPtr,
+            const std::shared_ptr<const FollowPath::Feedback> feedback) {
+            RCLCPP_DEBUG(
+                get_logger(),
+                "Follow path feedback: goal_distance=%.2f waypoint_distance=%.2f",
+                feedback->goal_distance,
+                feedback->waypoint_distance
+            );
+        }
+
+        void follow_path_result_callback(const rclcpp_action::ClientGoalHandle<FollowPath>::WrappedResult & result) {
+            SetRobotState::Request request;
+            request.state.is_moving = false; 
+            auto req_ptr = std::make_shared<SetRobotState::Request>(request);
+            auto future = robot_state_client->async_send_request(req_ptr);
+            switch (result.code) {
+                case rclcpp_action::ResultCode::SUCCEEDED:
+                    RCLCPP_INFO(get_logger(), "Follow path succeeded: %s", result.result->success ? "true" : "false");
+                    break;
+                case rclcpp_action::ResultCode::ABORTED:
+                    RCLCPP_ERROR(get_logger(), "Follow path goal was aborted");
+                    return;
+                case rclcpp_action::ResultCode::CANCELED:
+                    RCLCPP_WARN(get_logger(), "Follow path goal was canceled");
+                    return;
+                default:
+                    RCLCPP_ERROR(get_logger(), "Follow path goal ended with unknown result code");
+                    return;
+            }
         }
 
         void odom_callback(const nav_msgs::msg::Odometry & msg) {
