@@ -7,9 +7,17 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(warehouse_interfaces REQUIRED)
+
+add_executable(order_manager src/order_manager.cpp)
+ament_target_dependencies(order_manager rclcpp geometry_msgs warehouse_interfaces)
+
+install(TARGETS
+  order_manager
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

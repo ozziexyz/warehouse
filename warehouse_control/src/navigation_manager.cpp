@@ -35,6 +35,11 @@ class NavigationManager : public rclcpp::Node {
                 10,
                 std::bind(&NavigationManager::pose_callback, this, std::placeholders::_1)
             );
+            state_sub = create_subscription<RobotState>(
+                "/robot_state",
+                10,
+                std::bind(&NavigationManager::state_callback, this, std::placeholders::_1)
+            );
             path_pub = create_publisher<nav_msgs::msg::Path>("/path", 10);
             robot_state_client = create_client<SetRobotState>("/robot_state/set", 10);
             path_planner_client = create_client<GeneratePath>("/generate_path", 10);
@@ -59,16 +64,22 @@ class NavigationManager : public rclcpp::Node {
         void goal_sub_callback(const geometry_msgs::msg::PoseStamped & msg) {
             goal_pose = msg;
 
-            auto request = std::make_shared<GeneratePath::Request>();
-            request->start.header.frame_id = "/map";
-            // request->start.pose = odom.pose.pose;
-            request->start.pose = gt_pose.pose;
-            request->goal = goal_pose;
+            if(!state.is_moving) {
+                 auto request = std::make_shared<GeneratePath::Request>();
+                request->start.header.frame_id = "/map";
+                // request->start.pose = odom.pose.pose;
+                request->start.pose = gt_pose.pose;
+                request->goal = goal_pose;
 
-            path_planner_client->async_send_request(
-                request,
-                std::bind(&NavigationManager::generate_path_response_callback, this, std::placeholders::_1)
-            );
+                path_planner_client->async_send_request(
+                    request,
+                    std::bind(&NavigationManager::generate_path_response_callback, this, std::placeholders::_1)
+                );
+            }
+        }
+
+        void state_callback(const RobotState& msg) {
+            state = msg;
         }
 
         void pose_callback(const geometry_msgs::msg::PoseStamped & msg) {
@@ -156,6 +167,7 @@ class NavigationManager : public rclcpp::Node {
         rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr goal_sub;
         rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr pose_sub;
         rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub;
+        rclcpp::Subscription<RobotState>::SharedPtr state_sub;
         rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_pub;
         rclcpp_action::Client<warehouse_interfaces::action::FollowPath>::SharedPtr controller_client;
         rclcpp::Client<SetRobotState>::SharedPtr robot_state_client;
@@ -163,6 +175,7 @@ class NavigationManager : public rclcpp::Node {
         rclcpp::TimerBase::SharedPtr timer;
         geometry_msgs::msg::PoseStamped goal_pose;
         geometry_msgs::msg::PoseStamped gt_pose;
+        RobotState state;
         nav_msgs::msg::Path path;
         nav_msgs::msg::Odometry odom;
 };

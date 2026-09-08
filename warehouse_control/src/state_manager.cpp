@@ -22,7 +22,7 @@ class StateManager : public rclcpp::Node {
             publish_timer = create_timer(1s, std::bind(&StateManager::timer_callback, this));
 
             RobotState initial_state;
-            initial_state.is_moving = true;
+            initial_state.is_moving = false;
             state = initial_state;
         }
     
