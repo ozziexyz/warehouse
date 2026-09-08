@@ -31,7 +31,19 @@ def generate_launch_description():
     sm_controller_node = Node(
         package='warehouse_control',
         executable='sm_controller',
-        output='screen'
+        name='sm_controller',
+        output='screen',
+        parameters=[{
+            'heading_kp': 1.5,
+            'heading_kt': 0.5,
+            'slowdown_distance': 0.25,
+            'goal_tolerance': 0.01,
+            'no_turn_distance': 0.5,
+            'max_drive_angle': 0.5,
+            'min_turn_angle': 0.05,
+            'max_v': 0.6,
+            'max_w': 1.57,
+        }],
     )
 
     navigation_manager_node = Node(

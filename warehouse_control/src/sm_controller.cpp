@@ -11,6 +11,25 @@ using GoalHandleFollowPath = rclcpp_action::ServerGoalHandle<FollowPath>;
 class SMController : public rclcpp::Node {
     public:
         SMController() : Node("sm_controller") {
+            declare_parameter("heading_kp", 1.5);
+            heading_kp_ = get_parameter("heading_kp").as_double();
+            declare_parameter("heading_kt", 0.5);
+            heading_kt_ = get_parameter("heading_kt").as_double();
+            declare_parameter("slowdown_distance", 0.25);
+            slowdown_distance_ = get_parameter("slowdown_distance").as_double();
+            declare_parameter("goal_tolerance", 0.01);
+            goal_tolerance_ = get_parameter("goal_tolerance").as_double();
+            declare_parameter("no_turn_distance", 0.5);
+            no_turn_distance_ = get_parameter("no_turn_distance").as_double();
+            declare_parameter("max_drive_angle", 0.5);
+            max_drive_angle_ = get_parameter("max_drive_angle").as_double();
+            declare_parameter("min_turn_angle", 0.05);
+            min_turn_angle_ = get_parameter("min_turn_angle").as_double();
+            declare_parameter("max_v", 0.6);
+            max_v_ = get_parameter("max_v").as_double();
+            declare_parameter("max_w", 1.57);
+            max_w_ = get_parameter("max_w").as_double();
+
             sub_group_ = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
             action_group_ = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
             rclcpp::SubscriptionOptions sub_options;
@@ -52,12 +71,26 @@ class SMController : public rclcpp::Node {
             return atan2(sin(angle), cos(angle));
         }
 
-        double desired_velocity(double distance) {
-            double max_velocity = 0.6;
-            if(distance <= 0.5) {
-                return (distance / 0.5) * max_velocity;
+        double xte(geometry_msgs::msg::Pose j1, geometry_msgs::msg::Pose j2, geometry_msgs::msg::Pose r) {
+            double path_dx = j2.position.x - j1.position.x;
+            double path_dy = j2.position.y - j1.position.y;
+            double path_d = hypot(path_dx, path_dy);
+            double robot_atx = r.position.x - j1.position.x;
+            double robot_aty = r.position.y - j1.position.y;
+           
+            double cross = robot_atx * path_dy - robot_aty * path_dx;
+            if(path_d > 0) {
+                return cross / path_d;
+            } else {
+                return 0;
             }
-            return max_velocity;
+        }
+ 
+        double desired_velocity(double distance) {
+            if(distance <= slowdown_distance_) {
+                return std::max(distance / slowdown_distance_ * max_v_, 0.05);
+            }
+            return max_v_;
         }
 
         void odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {
@@ -101,7 +134,7 @@ class SMController : public rclcpp::Node {
             int next_junction = 1;
 
             junctions.push_back(0);
-            for(int i = 1; i < waypoints.size() - 1; i++) {
+            for(int i = 1; i < (int)waypoints.size() - 1; i++) {
                 double dpx = waypoints[i].pose.position.x - waypoints[i-1].pose.position.x;
                 double dpy = waypoints[i].pose.position.y - waypoints[i-1].pose.position.y;
                 double dnx = waypoints[i+1].pose.position.x - waypoints[i].pose.position.x;
@@ -116,9 +149,12 @@ class SMController : public rclcpp::Node {
 
             rclcpp::Rate loop_rate(10);
 
-            while(next_junction < junctions.size()) {
+            while(next_junction < (int)junctions.size()) {
                 geometry_msgs::msg::Pose robot_pose = get_odom()->pose.pose;
+                geometry_msgs::msg::Pose prev_junction = waypoints[junctions[next_junction-1]].pose;
                 geometry_msgs::msg::Pose junction = waypoints[junctions[next_junction]].pose;
+
+                double xt_error = xte(prev_junction, junction, robot_pose);
 
                 double dx = junction.position.x - robot_pose.position.x;
                 double dy = junction.position.y - robot_pose.position.y;
@@ -131,18 +167,21 @@ class SMController : public rclcpp::Node {
 
                 // RCLCPP_INFO(get_logger(), "Distance from junction: %f", distance(junction, robot_pose));
 
-                if(abs(heading_error) >= 0.5 && state_ == SMController::State::DRIVE) {
+                if(abs(heading_error) >= max_drive_angle_ && d > no_turn_distance_ && state_ == SMController::State::DRIVE) {
                     state_ = SMController::State::TURN;
-                } else if(abs(heading_error) >= 0.05 && state_ == SMController::State::TURN) {
+                    RCLCPP_INFO(get_logger(), "State: TURN, HE: %f", heading_error);
+                } else if(abs(heading_error) >= min_turn_angle_ && state_ == SMController::State::TURN) {
                     state_ = SMController::State::TURN;
+                    RCLCPP_INFO(get_logger(), "State: TURN, HE: %f", heading_error);
                 } else {
                     state_ = SMController::State::DRIVE;
+                    RCLCPP_INFO(get_logger(), "State: DRIVE");
                 }
 
                 if(state_ == SMController::State::DRIVE) {
-                    if(d >= 0.01) {
+                    if(d >= goal_tolerance_) {
                         cmd_vel.twist.linear.x = desired_velocity(d);
-                        cmd_vel.twist.angular.z = heading_error * 1.0;
+                        if(d > no_turn_distance_) cmd_vel.twist.angular.z = heading_error * heading_kp_ + heading_kt_ * xt_error;
                     } else {
                         cmd_vel.twist.linear.x = 0.0;
                         cmd_vel.twist.angular.z = 0.0;
@@ -150,9 +189,10 @@ class SMController : public rclcpp::Node {
                     }
                 } else {
                     cmd_vel.twist.linear.x = 0.0;
-                    cmd_vel.twist.angular.z = heading_error * 1.0;
+                    cmd_vel.twist.angular.z = heading_error * heading_kp_;
                 }
 
+                cmd_vel.twist.angular.z = std::max(std::min(cmd_vel.twist.angular.z, max_w_), -max_w_);
                 cmd_vel_pub_->publish(cmd_vel);
                 loop_rate.sleep();
             }
@@ -177,6 +217,16 @@ class SMController : public rclcpp::Node {
         nav_msgs::msg::Odometry::SharedPtr odom_;
         std::mutex odom_mtx_;
         SMController::State state_ = State::STOP;
+
+        double heading_kp_;
+        double heading_kt_;
+        double slowdown_distance_;
+        double goal_tolerance_;
+        double no_turn_distance_;
+        double max_drive_angle_;
+        double min_turn_angle_;
+        double max_v_;
+        double max_w_;
 };
 
 int main(int argc, char ** argv) {
