@@ -61,6 +61,8 @@ class SpawnBox(Node):
         entity_name = f"{self.entity_prefix}_{self._spawn_count}"
         self._spawn_count += 1
 
+        self.get_logger().info(f"location #: {location}")
+
         cmd = [
             'ros2', 'run', 'ros_gz_sim', 'create',
             '-world', self.world_name,
@@ -68,7 +70,7 @@ class SpawnBox(Node):
             '-name', entity_name,
             '-x', str(self.locations[location][0]),
             '-y', str(self.locations[location][1]),
-            '-z', '6',
+            '-z', '5',
         ]
 
         try:

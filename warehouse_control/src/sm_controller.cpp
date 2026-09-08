@@ -19,7 +19,7 @@ class SMController : public rclcpp::Node {
             slowdown_distance_ = get_parameter("slowdown_distance").as_double();
             declare_parameter("goal_tolerance", 0.01);
             goal_tolerance_ = get_parameter("goal_tolerance").as_double();
-            declare_parameter("no_turn_distance", 0.5);
+            declare_parameter("no_turn_distance", 0.25);
             no_turn_distance_ = get_parameter("no_turn_distance").as_double();
             declare_parameter("max_drive_angle", 0.5);
             max_drive_angle_ = get_parameter("max_drive_angle").as_double();
@@ -169,16 +169,17 @@ class SMController : public rclcpp::Node {
 
                 if(abs(heading_error) >= max_drive_angle_ && d > no_turn_distance_ && state_ == SMController::State::DRIVE) {
                     state_ = SMController::State::TURN;
-                    RCLCPP_INFO(get_logger(), "State: TURN, HE: %f", heading_error);
+                    // RCLCPP_INFO(get_logger(), "State: TURN, HE: %f", heading_error);
                 } else if(abs(heading_error) >= min_turn_angle_ && state_ == SMController::State::TURN) {
                     state_ = SMController::State::TURN;
-                    RCLCPP_INFO(get_logger(), "State: TURN, HE: %f", heading_error);
+                    // RCLCPP_INFO(get_logger(), "State: TURN, HE: %f", heading_error);
                 } else {
                     state_ = SMController::State::DRIVE;
-                    RCLCPP_INFO(get_logger(), "State: DRIVE");
+                    // RCLCPP_INFO(get_logger(), "State: DRIVE");
                 }
 
                 if(state_ == SMController::State::DRIVE) {
+                    RCLCPP_INFO(get_logger(), "d: %f", d);
                     if(d >= goal_tolerance_) {
                         cmd_vel.twist.linear.x = desired_velocity(d);
                         if(d > no_turn_distance_) cmd_vel.twist.angular.z = heading_error * heading_kp_ + heading_kt_ * xt_error;

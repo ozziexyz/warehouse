@@ -2,6 +2,7 @@
 #include <warehouse_interfaces/srv/set_robot_state.hpp>
 #include <warehouse_interfaces/msg/robot_state.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
+#include <std_msgs/msg/int32.hpp>
 
 using namespace warehouse_interfaces::srv;
 using namespace warehouse_interfaces::msg;
@@ -17,6 +18,10 @@ class OrderManager : public rclcpp::Node {
             );
             goal_pub_ = create_publisher<geometry_msgs::msg::PoseStamped>(
                 "/goal",
+                10
+            );
+            box_pub_ = create_publisher<std_msgs::msg::Int32>(
+                "/spawn_box",
                 10
             );
 
@@ -52,24 +57,32 @@ class OrderManager : public rclcpp::Node {
 
         void timer_callback() {
             RCLCPP_INFO(get_logger(), "Is moving: %d", state_.is_moving);
-            if(current_item_ < orders_[current_order_].size() && !state_.is_moving) {
+            if(current_item_ < orders_[current_order_].size() && !waiting_){
                 geometry_msgs::msg::PoseStamped pose;
                 pose.header.frame_id = "map";
                 pose.pose.position.x = locations_[orders_[current_order_][current_item_]].first;
                 pose.pose.position.y = locations_[orders_[current_order_][current_item_]].second;
                 goal_pub_->publish(pose);
+                waiting_ = true;
                 current_item_++;
+            } else if(!state_.is_moving && waiting_) {
+                std_msgs::msg::Int32 loc;
+                loc.data = orders_[current_order_][current_item_ - 1];
+                box_pub_->publish(loc);
+                waiting_ = false;
             }
         }
 
         rclcpp::Subscription<RobotState>::SharedPtr state_sub_;
         rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr goal_pub_;
+        rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr box_pub_;
         rclcpp::TimerBase::SharedPtr timer_;
         RobotState state_;
         std::vector<std::vector<int>> orders_;
         std::vector<std::pair<int, int>> locations_;
         int current_order_ = 0;
         int current_item_ = 0;
+        bool waiting_ = false;
 };
 
 int main(int argc, char ** argv) {
