@@ -51,7 +51,15 @@ class SMController : public rclcpp::Node {
         double wrap_angle(double angle) {
             return atan2(sin(angle), cos(angle));
         }
-        
+
+        double desired_velocity(double distance) {
+            double max_velocity = 0.6;
+            if(distance <= 0.5) {
+                return (distance / 0.5) * max_velocity;
+            }
+            return max_velocity;
+        }
+
         void odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {
             std::lock_guard<std::mutex> lock(odom_mtx_);
             odom_ = msg;
@@ -90,8 +98,9 @@ class SMController : public rclcpp::Node {
             const auto goal = goal_handle->get_goal();
             const auto & waypoints = goal->path.poses;
             std::vector<int> junctions;
-            int next_junction = 0;
+            int next_junction = 1;
 
+            junctions.push_back(0);
             for(int i = 1; i < waypoints.size() - 1; i++) {
                 double dpx = waypoints[i].pose.position.x - waypoints[i-1].pose.position.x;
                 double dpy = waypoints[i].pose.position.y - waypoints[i-1].pose.position.y;
@@ -110,8 +119,10 @@ class SMController : public rclcpp::Node {
             while(next_junction < junctions.size()) {
                 geometry_msgs::msg::Pose robot_pose = get_odom()->pose.pose;
                 geometry_msgs::msg::Pose junction = waypoints[junctions[next_junction]].pose;
+
                 double dx = junction.position.x - robot_pose.position.x;
                 double dy = junction.position.y - robot_pose.position.y;
+                double d = distance(junction, robot_pose);
                 double desired_heading = atan2(dy, dx);
                 double heading_error = wrap_angle(desired_heading - yaw_from_quaternion(robot_pose.orientation));
 
@@ -129,9 +140,9 @@ class SMController : public rclcpp::Node {
                 }
 
                 if(state_ == SMController::State::DRIVE) {
-                    if(distance(junction, robot_pose) >= 0.1) {
-                        cmd_vel.twist.linear.x = 0.75;
-                        cmd_vel.twist.angular.z = heading_error * 0.6;
+                    if(d >= 0.01) {
+                        cmd_vel.twist.linear.x = desired_velocity(d);
+                        cmd_vel.twist.angular.z = heading_error * 1.0;
                     } else {
                         cmd_vel.twist.linear.x = 0.0;
                         cmd_vel.twist.angular.z = 0.0;
@@ -139,7 +150,7 @@ class SMController : public rclcpp::Node {
                     }
                 } else {
                     cmd_vel.twist.linear.x = 0.0;
-                    cmd_vel.twist.angular.z = heading_error * 0.6;
+                    cmd_vel.twist.angular.z = heading_error * 1.0;
                 }
 
                 cmd_vel_pub_->publish(cmd_vel);
