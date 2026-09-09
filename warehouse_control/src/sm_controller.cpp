@@ -95,8 +95,10 @@ class SMController : public rclcpp::Node {
         }
  
         double desired_velocity(double distance) {
-            if(distance <= slowdown_distance_) {
+            if(distance <= slowdown_distance_ && distance >= 2 * goal_tolerance_) {
                 return std::max(distance / slowdown_distance_ * max_v_, 0.05);
+            } else if(distance <= 2 * goal_tolerance_) {
+                return 0.05;
             }
             return max_v_;
         }
@@ -195,7 +197,7 @@ class SMController : public rclcpp::Node {
                     // RCLCPP_INFO(get_logger(), "State: TURN, HE: %f", heading_error);
                 } else if(abs(heading_error) < min_turn_angle_ && state_ == SMController::State::TURN) {
                     state_ = SMController::DWELL;
-                } else if(state_ == SMController::State::DWELL && num_tags_ == 0) {
+                } else if(state_ == SMController::State::DWELL && get_num_tags() == 0) {
                     state_ = SMController::State::DWELL;
                 } else {
                     state_ = SMController::State::DRIVE;
@@ -204,13 +206,13 @@ class SMController : public rclcpp::Node {
 
                 if(state_ == SMController::State::DRIVE) {
                     // RCLCPP_INFO(get_logger(), "d: %f", d);
-                    if(d >= goal_tolerance_) {
-                        cmd_vel.twist.linear.x = desired_velocity(d);
-                        if(d > no_turn_distance_) cmd_vel.twist.angular.z = heading_error * heading_kp_ + heading_kt_ * xt_error;
-                    } else {
+                    if(d < goal_tolerance_ && get_num_tags() > 0) {
                         cmd_vel.twist.linear.x = 0.0;
                         cmd_vel.twist.angular.z = 0.0;
                         next_junction++;
+                    } else {
+                        cmd_vel.twist.linear.x = desired_velocity(d);
+                        if(d > no_turn_distance_) cmd_vel.twist.angular.z = heading_error * heading_kp_ + heading_kt_ * xt_error;
                     }
                 } else if(state_ == SMController::State::DWELL) {
                     cmd_vel.twist.linear.x = 0.0;

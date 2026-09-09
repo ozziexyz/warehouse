@@ -36,12 +36,12 @@ def generate_launch_description():
         parameters=[{
             'heading_kp': 1.5,
             'heading_kt': 0.5,
-            'slowdown_distance': 0.3,
-            'goal_tolerance': 0.02,
+            'slowdown_distance': 0.4,
+            'goal_tolerance': 0.015,
             'no_turn_distance': 0.5,
             'max_drive_angle': 0.5,
             'min_turn_angle': 0.05,
-            'max_v': 0.6,
+            'max_v': 0.75,
             'max_w': 1.57,
         }],
     )
