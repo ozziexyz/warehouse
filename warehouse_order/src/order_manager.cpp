@@ -18,6 +18,9 @@ class OrderManager : public rclcpp::Node {
 
         OrderManager() : Node("order_manager") {
             RCLCPP_INFO(get_logger(), "order_manager node started");
+            declare_parameter("spawn_boxes", true);
+            spawn_boxes_ = get_parameter("spawn_boxes").as_bool();
+
             state_sub_ = create_subscription<RobotState>(
                 "/robot_state",
                 10,
@@ -101,12 +104,13 @@ class OrderManager : public rclcpp::Node {
                     break;
             }
 
-            rclcpp::Rate rate(0.5);
-            std_msgs::msg::Int32 box_msg;
-            box_msg.data = orders_[current_order_][current_item_];
-            box_pub_->publish(box_msg);
-
-            rate.sleep();
+            if(spawn_boxes_) {
+                rclcpp::Rate rate(0.5);
+                std_msgs::msg::Int32 box_msg;
+                box_msg.data = orders_[current_order_][current_item_];
+                box_pub_->publish(box_msg);
+                rate.sleep();
+            }
 
             current_item_++;
 
@@ -155,6 +159,7 @@ class OrderManager : public rclcpp::Node {
         int current_order_ = 0;
         int current_item_ = 0;
         bool active_order_ = false;
+        bool spawn_boxes_;
 };
 
 int main(int argc, char ** argv) {

@@ -43,6 +43,9 @@ def generate_launch_description():
         executable='order_manager',
         name='order_manager',
         output='screen',
+        parameters=[{
+            'spawn_boxes': False
+        }]
     )
 
     return LaunchDescription([
