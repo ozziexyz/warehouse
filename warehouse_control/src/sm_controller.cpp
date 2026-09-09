@@ -95,14 +95,19 @@ class SMController : public rclcpp::Node {
         }
  
         double desired_velocity(double distance) {
+            static double last_v = 0;
             double v;
-            if(distance <= slowdown_distance_ && distance >= 2 * goal_tolerance_) {
+            if(distance <= slowdown_distance_) {
                 v = std::max(distance / slowdown_distance_ * max_v_, 0.05);
-            } else if(distance <= 2 * goal_tolerance_) {
-                v = 0.05;
             } else {
                 v = max_v_;
             }
+
+            if(distance <= slowdown_distance_ && last_v < v) {
+                v = 0;
+            }
+
+            last_v = v;
             return v;
         }
 
