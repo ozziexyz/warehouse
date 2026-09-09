@@ -7,6 +7,7 @@
 #include <rclcpp_action/rclcpp_action.hpp>
 
 #include <warehouse_interfaces/action/follow_path.hpp>
+#include <warehouse_interfaces/action/navigate_to_pose.hpp>
 #include <warehouse_interfaces/srv/set_robot_state.hpp>
 #include <warehouse_interfaces/srv/generate_path.hpp>
 
@@ -17,13 +18,18 @@ using namespace std::chrono_literals;
 
 class NavigationManager : public rclcpp::Node {
     public:
+        using NavigateToPose = warehouse_interfaces::action::NavigateToPose;
+        using GoalHandleNavigateToPose = rclcpp_action::ServerGoalHandle<NavigateToPose>;
+
         NavigationManager() : Node("navigation_manager") {
             RCLCPP_INFO(get_logger(), "navigation_manager node started");
 
-            goal_sub = create_subscription<geometry_msgs::msg::PoseStamped>(
-                "/goal", 
-                10,
-                std::bind(&NavigationManager::goal_sub_callback, this, std::placeholders::_1)
+            nav_action_server = rclcpp_action::create_server<NavigateToPose>(
+                this,
+                "/navigate_to_pose",
+                std::bind(&NavigationManager::handle_goal, this, std::placeholders::_1, std::placeholders::_2),
+                std::bind(&NavigationManager::handle_cancel, this, std::placeholders::_1),
+                std::bind(&NavigationManager::handle_accepted, this, std::placeholders::_1)
             );
             odom_sub = create_subscription<nav_msgs::msg::Odometry>(
                 "/diff_drive_controller/odom", 
@@ -61,25 +67,53 @@ class NavigationManager : public rclcpp::Node {
         }
 
     private:
-        void goal_sub_callback(const geometry_msgs::msg::PoseStamped & msg) {
-            goal_pose = msg;
-
-            if(!state.is_moving) {
-                 auto request = std::make_shared<GeneratePath::Request>();
-                request->start.header.frame_id = "/map";
-                // request->start.pose = odom.pose.pose;
-                request->start.pose = gt_pose.pose;
-                request->goal = goal_pose;
-
-                path_planner_client->async_send_request(
-                    request,
-                    std::bind(&NavigationManager::generate_path_response_callback, this, std::placeholders::_1)
-                );
+        rclcpp_action::GoalResponse handle_goal(
+            const rclcpp_action::GoalUUID & uuid,
+            std::shared_ptr<const NavigateToPose::Goal> goal
+        ) {
+            (void)uuid;
+            (void)goal;
+            if (state.is_moving) {
+                RCLCPP_WARN(get_logger(), "Rejecting navigation goal, robot is already moving");
+                return rclcpp_action::GoalResponse::REJECT;
             }
+            RCLCPP_INFO(get_logger(), "Received navigation goal");
+            return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
+        }
+
+        rclcpp_action::CancelResponse handle_cancel(const std::shared_ptr<GoalHandleNavigateToPose> goal_handle) {
+            (void)goal_handle;
+            RCLCPP_INFO(get_logger(), "Received request to cancel navigation goal");
+            if (follow_path_goal_handle) {
+                controller_client->async_cancel_goal(follow_path_goal_handle);
+            }
+            return rclcpp_action::CancelResponse::ACCEPT;
+        }
+
+        void handle_accepted(const std::shared_ptr<GoalHandleNavigateToPose> goal_handle) {
+            current_goal_handle = goal_handle;
+            goal_pose = goal_handle->get_goal()->pose;
+
+            auto request = std::make_shared<GeneratePath::Request>();
+            request->start.header.frame_id = "/map";
+            // request->start.pose = odom.pose.pose;
+            request->start.pose = gt_pose.pose;
+            request->goal = goal_pose;
+
+            path_planner_client->async_send_request(
+                request,
+                std::bind(&NavigationManager::generate_path_response_callback, this, std::placeholders::_1)
+            );
         }
 
         void state_callback(const RobotState& msg) {
             state = msg;
+
+            if (current_goal_handle && current_goal_handle->is_executing()) {
+                auto feedback = std::make_shared<NavigateToPose::Feedback>();
+                feedback->is_moving = state.is_moving;
+                current_goal_handle->publish_feedback(feedback);
+            }
         }
 
         void pose_callback(const geometry_msgs::msg::PoseStamped & msg) {
@@ -90,6 +124,11 @@ class NavigationManager : public rclcpp::Node {
             auto response = future.get();
             if (!response->success) {
                 RCLCPP_WARN(get_logger(), "Path planning failed for requested goal");
+                if (current_goal_handle && current_goal_handle->is_active()) {
+                    auto result = std::make_shared<NavigateToPose::Result>();
+                    result->success = false;
+                    current_goal_handle->abort(result);
+                }
                 return;
             }
 
@@ -113,10 +152,16 @@ class NavigationManager : public rclcpp::Node {
         void follow_path_goal_response_callback(const rclcpp_action::ClientGoalHandle<FollowPath>::SharedPtr & goal_handle) {
             if (!goal_handle) {
                 RCLCPP_ERROR(get_logger(), "Follow path goal was rejected by the controller");
+                if (current_goal_handle && current_goal_handle->is_active()) {
+                    auto result = std::make_shared<NavigateToPose::Result>();
+                    result->success = false;
+                    current_goal_handle->abort(result);
+                }
                 return;
             }
             RCLCPP_INFO(get_logger(), "Follow path goal accepted by the controller");
-            
+            follow_path_goal_handle = goal_handle;
+
             auto request = std::make_shared<SetRobotState::Request>();
             request->state.is_moving = true;
             auto future = robot_state_client->async_send_request(request);
@@ -135,21 +180,39 @@ class NavigationManager : public rclcpp::Node {
 
         void follow_path_result_callback(const rclcpp_action::ClientGoalHandle<FollowPath>::WrappedResult & result) {
             SetRobotState::Request request;
-            request.state.is_moving = false; 
+            request.state.is_moving = false;
             auto req_ptr = std::make_shared<SetRobotState::Request>(request);
             auto future = robot_state_client->async_send_request(req_ptr);
+
+            auto nav_result = std::make_shared<NavigateToPose::Result>();
             switch (result.code) {
                 case rclcpp_action::ResultCode::SUCCEEDED:
                     RCLCPP_INFO(get_logger(), "Follow path succeeded: %s", result.result->success ? "true" : "false");
+                    nav_result->success = result.result->success;
+                    if (current_goal_handle && current_goal_handle->is_active()) {
+                        current_goal_handle->succeed(nav_result);
+                    }
                     break;
                 case rclcpp_action::ResultCode::ABORTED:
                     RCLCPP_ERROR(get_logger(), "Follow path goal was aborted");
+                    nav_result->success = false;
+                    if (current_goal_handle && current_goal_handle->is_active()) {
+                        current_goal_handle->abort(nav_result);
+                    }
                     return;
                 case rclcpp_action::ResultCode::CANCELED:
                     RCLCPP_WARN(get_logger(), "Follow path goal was canceled");
+                    nav_result->success = false;
+                    if (current_goal_handle && current_goal_handle->is_active()) {
+                        current_goal_handle->canceled(nav_result);
+                    }
                     return;
                 default:
                     RCLCPP_ERROR(get_logger(), "Follow path goal ended with unknown result code");
+                    nav_result->success = false;
+                    if (current_goal_handle && current_goal_handle->is_active()) {
+                        current_goal_handle->abort(nav_result);
+                    }
                     return;
             }
         }
@@ -164,7 +227,7 @@ class NavigationManager : public rclcpp::Node {
             }
         }
 
-        rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr goal_sub;
+        rclcpp_action::Server<NavigateToPose>::SharedPtr nav_action_server;
         rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr pose_sub;
         rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub;
         rclcpp::Subscription<RobotState>::SharedPtr state_sub;
@@ -173,6 +236,8 @@ class NavigationManager : public rclcpp::Node {
         rclcpp::Client<SetRobotState>::SharedPtr robot_state_client;
         rclcpp::Client<GeneratePath>::SharedPtr path_planner_client;
         rclcpp::TimerBase::SharedPtr timer;
+        std::shared_ptr<GoalHandleNavigateToPose> current_goal_handle;
+        rclcpp_action::ClientGoalHandle<FollowPath>::SharedPtr follow_path_goal_handle;
         geometry_msgs::msg::PoseStamped goal_pose;
         geometry_msgs::msg::PoseStamped gt_pose;
         RobotState state;
