@@ -37,7 +37,7 @@ def generate_launch_description():
             'heading_kp': 1.5,
             'heading_kt': 0.5,
             'slowdown_distance': 0.3,
-            'goal_tolerance': 0.01,
+            'goal_tolerance': 0.05,
             'no_turn_distance': 0.5,
             'max_drive_angle': 0.5,
             'min_turn_angle': 0.05,

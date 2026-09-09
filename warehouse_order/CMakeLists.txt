@@ -8,11 +8,12 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(warehouse_interfaces REQUIRED)
 
 add_executable(order_manager src/order_manager.cpp)
-ament_target_dependencies(order_manager rclcpp geometry_msgs warehouse_interfaces)
+ament_target_dependencies(order_manager rclcpp rclcpp_action geometry_msgs warehouse_interfaces)
 
 install(TARGETS
   order_manager

@@ -73,10 +73,10 @@ class NavigationManager : public rclcpp::Node {
         ) {
             (void)uuid;
             (void)goal;
-            if (state.is_moving) {
-                RCLCPP_WARN(get_logger(), "Rejecting navigation goal, robot is already moving");
-                return rclcpp_action::GoalResponse::REJECT;
-            }
+            // if (state.is_moving) {
+            //     RCLCPP_WARN(get_logger(), "Rejecting navigation goal, robot is already moving");
+            //     return rclcpp_action::GoalResponse::REJECT;
+            // }
             RCLCPP_INFO(get_logger(), "Received navigation goal");
             return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
         }
@@ -179,6 +179,7 @@ class NavigationManager : public rclcpp::Node {
         }
 
         void follow_path_result_callback(const rclcpp_action::ClientGoalHandle<FollowPath>::WrappedResult & result) {
+            RCLCPP_INFO(get_logger(), "Follow path succeeded: %s", result.result->success ? "true" : "false");
             SetRobotState::Request request;
             request.state.is_moving = false;
             auto req_ptr = std::make_shared<SetRobotState::Request>(request);
@@ -187,7 +188,6 @@ class NavigationManager : public rclcpp::Node {
             auto nav_result = std::make_shared<NavigateToPose::Result>();
             switch (result.code) {
                 case rclcpp_action::ResultCode::SUCCEEDED:
-                    RCLCPP_INFO(get_logger(), "Follow path succeeded: %s", result.result->success ? "true" : "false");
                     nav_result->success = result.result->success;
                     if (current_goal_handle && current_goal_handle->is_active()) {
                         current_goal_handle->succeed(nav_result);
