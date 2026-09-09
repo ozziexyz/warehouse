@@ -103,7 +103,7 @@ class OrderManager : public rclcpp::Node {
 
             rclcpp::Rate rate(0.5);
             std_msgs::msg::Int32 box_msg;
-            box_msg.data = current_item_;
+            box_msg.data = orders_[current_order_][current_item_];
             box_pub_->publish(box_msg);
 
             rate.sleep();
