@@ -13,6 +13,7 @@ find_package(nav_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
+find_package(apriltag_msgs REQUIRED)
 find_package(warehouse_interfaces REQUIRED)
 
 add_executable(pure_pursuit_controller src/pure_pursuit_controller.cpp)
@@ -28,7 +29,7 @@ add_executable(path_planner src/path_planner.cpp)
 ament_target_dependencies(path_planner rclcpp nav_msgs geometry_msgs warehouse_interfaces)
 
 add_executable(sm_controller src/sm_controller.cpp)
-ament_target_dependencies(sm_controller rclcpp rclcpp_action nav_msgs geometry_msgs tf2 tf2_ros warehouse_interfaces)
+ament_target_dependencies(sm_controller rclcpp rclcpp_action nav_msgs geometry_msgs tf2 tf2_ros warehouse_interfaces apriltag_msgs)
 
 install(TARGETS
   pure_pursuit_controller

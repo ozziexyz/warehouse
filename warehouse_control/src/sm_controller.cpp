@@ -3,6 +3,7 @@
 #include <geometry_msgs/msg/twist_stamped.hpp>
 #include <rclcpp_action/rclcpp_action.hpp>
 #include <warehouse_interfaces/action/follow_path.hpp>
+#include <apriltag_msgs/msg/april_tag_detection_array.hpp>
 #include <mutex>
 
 using namespace warehouse_interfaces::action;
@@ -39,6 +40,13 @@ class SMController : public rclcpp::Node {
                 "/odometry/filtered",
                 10,
                 std::bind(&SMController::odom_callback, this, std::placeholders::_1),
+                sub_options
+            );
+
+            tag_sub_ = create_subscription<apriltag_msgs::msg::AprilTagDetectionArray>(
+                "/detections",
+                10,
+                std::bind(&SMController::tag_callback, this, std::placeholders::_1),
                 sub_options
             );
 
@@ -93,6 +101,10 @@ class SMController : public rclcpp::Node {
             return max_v_;
         }
 
+        void tag_callback(const apriltag_msgs::msg::AprilTagDetectionArray msg) {
+            num_tags_ = msg.detections.size();
+        }
+
         void odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {
             std::lock_guard<std::mutex> lock(odom_mtx_);
             odom_ = msg;
@@ -101,6 +113,11 @@ class SMController : public rclcpp::Node {
         nav_msgs::msg::Odometry::SharedPtr get_odom() {
             std::lock_guard<std::mutex> lock(odom_mtx_);
             return odom_;
+        }
+
+        int get_num_tags() {
+            std::lock_guard<std::mutex> lock(tag_mtx_);
+            return num_tags_;
         }
 
         rclcpp_action::GoalResponse handle_goal(const rclcpp_action::GoalUUID & uuid, std::shared_ptr<const FollowPath::Goal> goal) {
@@ -167,19 +184,26 @@ class SMController : public rclcpp::Node {
 
                 // RCLCPP_INFO(get_logger(), "Distance from junction: %f", distance(junction, robot_pose));
 
-                if(abs(heading_error) >= max_drive_angle_ && d > no_turn_distance_ && state_ == SMController::State::DRIVE) {
+                if(abs(heading_error) >= max_drive_angle_ 
+                    && d > no_turn_distance_ 
+                    && (state_ == SMController::State::DRIVE || state_ == SMController::State::DWELL)
+                ){
                     state_ = SMController::State::TURN;
                     // RCLCPP_INFO(get_logger(), "State: TURN, HE: %f", heading_error);
                 } else if(abs(heading_error) >= min_turn_angle_ && state_ == SMController::State::TURN) {
                     state_ = SMController::State::TURN;
                     // RCLCPP_INFO(get_logger(), "State: TURN, HE: %f", heading_error);
+                } else if(abs(heading_error) < min_turn_angle_ && state_ == SMController::State::TURN) {
+                    state_ = SMController::DWELL;
+                } else if(state_ == SMController::State::DWELL && num_tags_ == 0) {
+                    state_ = SMController::State::DWELL;
                 } else {
                     state_ = SMController::State::DRIVE;
                     // RCLCPP_INFO(get_logger(), "State: DRIVE");
                 }
 
                 if(state_ == SMController::State::DRIVE) {
-                    RCLCPP_INFO(get_logger(), "d: %f", d);
+                    // RCLCPP_INFO(get_logger(), "d: %f", d);
                     if(d >= goal_tolerance_) {
                         cmd_vel.twist.linear.x = desired_velocity(d);
                         if(d > no_turn_distance_) cmd_vel.twist.angular.z = heading_error * heading_kp_ + heading_kt_ * xt_error;
@@ -188,6 +212,9 @@ class SMController : public rclcpp::Node {
                         cmd_vel.twist.angular.z = 0.0;
                         next_junction++;
                     }
+                } else if(state_ == SMController::State::DWELL) {
+                    cmd_vel.twist.linear.x = 0.0;
+                    cmd_vel.twist.angular.z = 0.0;
                 } else {
                     cmd_vel.twist.linear.x = 0.0;
                     cmd_vel.twist.angular.z = heading_error * heading_kp_;
@@ -213,11 +240,14 @@ class SMController : public rclcpp::Node {
         };
         rclcpp::CallbackGroup::SharedPtr sub_group_, action_group_;
         rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
+        rclcpp::Subscription<apriltag_msgs::msg::AprilTagDetectionArray>::SharedPtr tag_sub_;
         rclcpp_action::Server<FollowPath>::SharedPtr action_server_;
         rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr cmd_vel_pub_;
         nav_msgs::msg::Odometry::SharedPtr odom_;
         std::mutex odom_mtx_;
+        std::mutex tag_mtx_;
         SMController::State state_ = State::STOP;
+        int num_tags_;
 
         double heading_kp_;
         double heading_kt_;
