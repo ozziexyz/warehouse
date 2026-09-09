@@ -101,6 +101,13 @@ class OrderManager : public rclcpp::Node {
                     break;
             }
 
+            rclcpp::Rate rate(0.5);
+            std_msgs::msg::Int32 box_msg;
+            box_msg.data = current_item_;
+            box_pub_->publish(box_msg);
+
+            rate.sleep();
+
             current_item_++;
 
             if(current_item_ != orders_[current_order_].size()) {
