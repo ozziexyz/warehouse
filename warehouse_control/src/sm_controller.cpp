@@ -95,19 +95,13 @@ class SMController : public rclcpp::Node {
         }
  
         double desired_velocity(double distance) {
-            static double last_v = 0;
             double v;
             if(distance <= slowdown_distance_) {
-                v = std::max(distance / slowdown_distance_ * max_v_, 0.05);
+                v = distance / slowdown_distance_ * max_v_;
             } else {
                 v = max_v_;
             }
-
-            if(distance <= slowdown_distance_ && last_v < v) {
-                v = 0;
-            }
-
-            last_v = v;
+            
             return v;
         }
 
@@ -173,6 +167,8 @@ class SMController : public rclcpp::Node {
                 }
             }
             junctions.push_back(waypoints.size() - 1);
+            rclcpp::Time dwell_time = get_clock()->now();
+            bool dwell_timeout = false;
             
             rclcpp::Rate loop_rate(10);
 
@@ -203,8 +199,13 @@ class SMController : public rclcpp::Node {
                     state_ = SMController::State::TURN;
                     // RCLCPP_INFO(get_logger(), "State: TURN, HE: %f", heading_error);
                 } else if(abs(heading_error) < min_turn_angle_ && state_ == SMController::State::TURN) {
+                    dwell_time = get_clock()->now();
                     state_ = SMController::DWELL;
                 } else if(state_ == SMController::State::DWELL && get_num_tags() == 0) {
+                    if((get_clock()->now() - dwell_time).seconds() > 10) {
+                        dwell_timeout = true;
+                        break;
+                    }
                     state_ = SMController::State::DWELL;
                 } else {
                     state_ = SMController::State::DRIVE;
@@ -234,10 +235,14 @@ class SMController : public rclcpp::Node {
                 loop_rate.sleep();
             }
 
-            if (rclcpp::ok()) {
+            if (rclcpp::ok() && !dwell_timeout) {
                 result->success = true;
                 goal_handle->succeed(result);
                 RCLCPP_INFO(get_logger(), "Goal succeeded");
+            } else {
+                result->success = false;
+                goal_handle->succeed(result);
+                RCLCPP_INFO(get_logger(), "Goal failed: dwell timeout");
             }
         }
 
