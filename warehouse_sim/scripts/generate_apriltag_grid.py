@@ -85,13 +85,13 @@ def build_snippet(args):
 
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--grid-width', type=int, default=7)
+    parser.add_argument('--grid-width', type=int, default=8)
     parser.add_argument('--grid-height', type=int, default=9)
     parser.add_argument('--resolution', type=float, default=1.0)
-    parser.add_argument('--origin-x', type=float, default=-2.0)
+    parser.add_argument('--origin-x', type=float, default=-3.0)
     parser.add_argument('--origin-y', type=float, default=4.0)
-    parser.add_argument('--tag-count', type=int, default=63, help='number of tag36h11-*.png textures available')
-    parser.add_argument('--size', type=float, default=0.55, help='tag edge length in meters (incl. white margin)')
+    parser.add_argument('--tag-count', type=int, default=72, help='number of tag36h11-*.png textures available')
+    parser.add_argument('--size', type=float, default=0.05, help='tag edge length in meters (incl. white margin)')
     parser.add_argument('--thickness', type=float, default=0.001, help='decal thickness in meters')
     parser.add_argument('--z-lift', type=float, default=0.0001, help='extra clearance above the ground plane to avoid z-fighting')
     parser.add_argument('--yaw', type=float, default=0.0, help='fixed yaw (radians) applied to every tag')

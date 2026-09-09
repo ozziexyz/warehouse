@@ -334,10 +334,10 @@
         </visual>
       </link>
     </model>
-     <!-- 63 floor AprilTags on the 7x9 path-planner grid -->
+    <!-- 72 floor AprilTags on the 8x9 path-planner grid -->
     <model name="floor_tag_0">
       <static>true</static>
-      <pose>-2.0000 4.0000 0.0006 0 0 0.0</pose>
+      <pose>-3.0000 4.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -367,7 +367,7 @@
     </model>
     <model name="floor_tag_1">
       <static>true</static>
-      <pose>-1.0000 4.0000 0.0006 0 0 0.0</pose>
+      <pose>-2.0000 4.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -397,7 +397,7 @@
     </model>
     <model name="floor_tag_2">
       <static>true</static>
-      <pose>0.0000 4.0000 0.0006 0 0 0.0</pose>
+      <pose>-1.0000 4.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -427,7 +427,7 @@
     </model>
     <model name="floor_tag_3">
       <static>true</static>
-      <pose>1.0000 4.0000 0.0006 0 0 0.0</pose>
+      <pose>0.0000 4.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -457,7 +457,7 @@
     </model>
     <model name="floor_tag_4">
       <static>true</static>
-      <pose>2.0000 4.0000 0.0006 0 0 0.0</pose>
+      <pose>1.0000 4.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -487,7 +487,7 @@
     </model>
     <model name="floor_tag_5">
       <static>true</static>
-      <pose>3.0000 4.0000 0.0006 0 0 0.0</pose>
+      <pose>2.0000 4.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -517,7 +517,7 @@
     </model>
     <model name="floor_tag_6">
       <static>true</static>
-      <pose>4.0000 4.0000 0.0006 0 0 0.0</pose>
+      <pose>3.0000 4.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -547,7 +547,7 @@
     </model>
     <model name="floor_tag_7">
       <static>true</static>
-      <pose>-2.0000 3.0000 0.0006 0 0 0.0</pose>
+      <pose>4.0000 4.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -577,7 +577,7 @@
     </model>
     <model name="floor_tag_8">
       <static>true</static>
-      <pose>-1.0000 3.0000 0.0006 0 0 0.0</pose>
+      <pose>-3.0000 3.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -607,7 +607,7 @@
     </model>
     <model name="floor_tag_9">
       <static>true</static>
-      <pose>0.0000 3.0000 0.0006 0 0 0.0</pose>
+      <pose>-2.0000 3.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -637,7 +637,7 @@
     </model>
     <model name="floor_tag_10">
       <static>true</static>
-      <pose>1.0000 3.0000 0.0006 0 0 0.0</pose>
+      <pose>-1.0000 3.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -667,7 +667,7 @@
     </model>
     <model name="floor_tag_11">
       <static>true</static>
-      <pose>2.0000 3.0000 0.0006 0 0 0.0</pose>
+      <pose>0.0000 3.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -697,7 +697,7 @@
     </model>
     <model name="floor_tag_12">
       <static>true</static>
-      <pose>3.0000 3.0000 0.0006 0 0 0.0</pose>
+      <pose>1.0000 3.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -727,7 +727,7 @@
     </model>
     <model name="floor_tag_13">
       <static>true</static>
-      <pose>4.0000 3.0000 0.0006 0 0 0.0</pose>
+      <pose>2.0000 3.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -757,7 +757,7 @@
     </model>
     <model name="floor_tag_14">
       <static>true</static>
-      <pose>-2.0000 2.0000 0.0006 0 0 0.0</pose>
+      <pose>3.0000 3.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -787,7 +787,7 @@
     </model>
     <model name="floor_tag_15">
       <static>true</static>
-      <pose>-1.0000 2.0000 0.0006 0 0 0.0</pose>
+      <pose>4.0000 3.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -817,7 +817,7 @@
     </model>
     <model name="floor_tag_16">
       <static>true</static>
-      <pose>0.0000 2.0000 0.0006 0 0 0.0</pose>
+      <pose>-3.0000 2.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -847,7 +847,7 @@
     </model>
     <model name="floor_tag_17">
       <static>true</static>
-      <pose>1.0000 2.0000 0.0006 0 0 0.0</pose>
+      <pose>-2.0000 2.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -877,7 +877,7 @@
     </model>
     <model name="floor_tag_18">
       <static>true</static>
-      <pose>2.0000 2.0000 0.0006 0 0 0.0</pose>
+      <pose>-1.0000 2.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -907,7 +907,7 @@
     </model>
     <model name="floor_tag_19">
       <static>true</static>
-      <pose>3.0000 2.0000 0.0006 0 0 0.0</pose>
+      <pose>0.0000 2.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -937,7 +937,7 @@
     </model>
     <model name="floor_tag_20">
       <static>true</static>
-      <pose>4.0000 2.0000 0.0006 0 0 0.0</pose>
+      <pose>1.0000 2.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -967,7 +967,7 @@
     </model>
     <model name="floor_tag_21">
       <static>true</static>
-      <pose>-2.0000 1.0000 0.0006 0 0 0.0</pose>
+      <pose>2.0000 2.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -997,7 +997,7 @@
     </model>
     <model name="floor_tag_22">
       <static>true</static>
-      <pose>-1.0000 1.0000 0.0006 0 0 0.0</pose>
+      <pose>3.0000 2.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1027,7 +1027,7 @@
     </model>
     <model name="floor_tag_23">
       <static>true</static>
-      <pose>0.0000 1.0000 0.0006 0 0 0.0</pose>
+      <pose>4.0000 2.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1057,7 +1057,7 @@
     </model>
     <model name="floor_tag_24">
       <static>true</static>
-      <pose>1.0000 1.0000 0.0006 0 0 0.0</pose>
+      <pose>-3.0000 1.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1087,7 +1087,7 @@
     </model>
     <model name="floor_tag_25">
       <static>true</static>
-      <pose>2.0000 1.0000 0.0006 0 0 0.0</pose>
+      <pose>-2.0000 1.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1117,7 +1117,7 @@
     </model>
     <model name="floor_tag_26">
       <static>true</static>
-      <pose>3.0000 1.0000 0.0006 0 0 0.0</pose>
+      <pose>-1.0000 1.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1147,7 +1147,7 @@
     </model>
     <model name="floor_tag_27">
       <static>true</static>
-      <pose>4.0000 1.0000 0.0006 0 0 0.0</pose>
+      <pose>0.0000 1.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1177,7 +1177,7 @@
     </model>
     <model name="floor_tag_28">
       <static>true</static>
-      <pose>-2.0000 0.0000 0.0006 0 0 0.0</pose>
+      <pose>1.0000 1.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1207,7 +1207,7 @@
     </model>
     <model name="floor_tag_29">
       <static>true</static>
-      <pose>-1.0000 0.0000 0.0006 0 0 0.0</pose>
+      <pose>2.0000 1.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1237,7 +1237,7 @@
     </model>
     <model name="floor_tag_30">
       <static>true</static>
-      <pose>0.0000 0.0000 0.0006 0 0 0.0</pose>
+      <pose>3.0000 1.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1267,7 +1267,7 @@
     </model>
     <model name="floor_tag_31">
       <static>true</static>
-      <pose>1.0000 0.0000 0.0006 0 0 0.0</pose>
+      <pose>4.0000 1.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1297,7 +1297,7 @@
     </model>
     <model name="floor_tag_32">
       <static>true</static>
-      <pose>2.0000 0.0000 0.0006 0 0 0.0</pose>
+      <pose>-3.0000 0.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1327,7 +1327,7 @@
     </model>
     <model name="floor_tag_33">
       <static>true</static>
-      <pose>3.0000 0.0000 0.0006 0 0 0.0</pose>
+      <pose>-2.0000 0.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1357,7 +1357,7 @@
     </model>
     <model name="floor_tag_34">
       <static>true</static>
-      <pose>4.0000 0.0000 0.0006 0 0 0.0</pose>
+      <pose>-1.0000 0.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1387,7 +1387,7 @@
     </model>
     <model name="floor_tag_35">
       <static>true</static>
-      <pose>-2.0000 -1.0000 0.0006 0 0 0.0</pose>
+      <pose>0.0000 0.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1417,7 +1417,7 @@
     </model>
     <model name="floor_tag_36">
       <static>true</static>
-      <pose>-1.0000 -1.0000 0.0006 0 0 0.0</pose>
+      <pose>1.0000 0.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1447,7 +1447,7 @@
     </model>
     <model name="floor_tag_37">
       <static>true</static>
-      <pose>0.0000 -1.0000 0.0006 0 0 0.0</pose>
+      <pose>2.0000 0.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1477,7 +1477,7 @@
     </model>
     <model name="floor_tag_38">
       <static>true</static>
-      <pose>1.0000 -1.0000 0.0006 0 0 0.0</pose>
+      <pose>3.0000 0.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1507,7 +1507,7 @@
     </model>
     <model name="floor_tag_39">
       <static>true</static>
-      <pose>2.0000 -1.0000 0.0006 0 0 0.0</pose>
+      <pose>4.0000 0.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1537,7 +1537,7 @@
     </model>
     <model name="floor_tag_40">
       <static>true</static>
-      <pose>3.0000 -1.0000 0.0006 0 0 0.0</pose>
+      <pose>-3.0000 -1.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1567,7 +1567,7 @@
     </model>
     <model name="floor_tag_41">
       <static>true</static>
-      <pose>4.0000 -1.0000 0.0006 0 0 0.0</pose>
+      <pose>-2.0000 -1.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1597,7 +1597,7 @@
     </model>
     <model name="floor_tag_42">
       <static>true</static>
-      <pose>-2.0000 -2.0000 0.0006 0 0 0.0</pose>
+      <pose>-1.0000 -1.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1627,7 +1627,7 @@
     </model>
     <model name="floor_tag_43">
       <static>true</static>
-      <pose>-1.0000 -2.0000 0.0006 0 0 0.0</pose>
+      <pose>0.0000 -1.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1657,7 +1657,7 @@
     </model>
     <model name="floor_tag_44">
       <static>true</static>
-      <pose>0.0000 -2.0000 0.0006 0 0 0.0</pose>
+      <pose>1.0000 -1.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1687,7 +1687,7 @@
     </model>
     <model name="floor_tag_45">
       <static>true</static>
-      <pose>1.0000 -2.0000 0.0006 0 0 0.0</pose>
+      <pose>2.0000 -1.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1717,7 +1717,7 @@
     </model>
     <model name="floor_tag_46">
       <static>true</static>
-      <pose>2.0000 -2.0000 0.0006 0 0 0.0</pose>
+      <pose>3.0000 -1.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1747,7 +1747,7 @@
     </model>
     <model name="floor_tag_47">
       <static>true</static>
-      <pose>3.0000 -2.0000 0.0006 0 0 0.0</pose>
+      <pose>4.0000 -1.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1777,7 +1777,7 @@
     </model>
     <model name="floor_tag_48">
       <static>true</static>
-      <pose>4.0000 -2.0000 0.0006 0 0 0.0</pose>
+      <pose>-3.0000 -2.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1807,7 +1807,7 @@
     </model>
     <model name="floor_tag_49">
       <static>true</static>
-      <pose>-2.0000 -3.0000 0.0006 0 0 0.0</pose>
+      <pose>-2.0000 -2.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1837,7 +1837,7 @@
     </model>
     <model name="floor_tag_50">
       <static>true</static>
-      <pose>-1.0000 -3.0000 0.0006 0 0 0.0</pose>
+      <pose>-1.0000 -2.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1867,7 +1867,7 @@
     </model>
     <model name="floor_tag_51">
       <static>true</static>
-      <pose>0.0000 -3.0000 0.0006 0 0 0.0</pose>
+      <pose>0.0000 -2.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1897,7 +1897,7 @@
     </model>
     <model name="floor_tag_52">
       <static>true</static>
-      <pose>1.0000 -3.0000 0.0006 0 0 0.0</pose>
+      <pose>1.0000 -2.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1927,7 +1927,7 @@
     </model>
     <model name="floor_tag_53">
       <static>true</static>
-      <pose>2.0000 -3.0000 0.0006 0 0 0.0</pose>
+      <pose>2.0000 -2.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1957,7 +1957,7 @@
     </model>
     <model name="floor_tag_54">
       <static>true</static>
-      <pose>3.0000 -3.0000 0.0006 0 0 0.0</pose>
+      <pose>3.0000 -2.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -1987,7 +1987,7 @@
     </model>
     <model name="floor_tag_55">
       <static>true</static>
-      <pose>4.0000 -3.0000 0.0006 0 0 0.0</pose>
+      <pose>4.0000 -2.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -2017,7 +2017,7 @@
     </model>
     <model name="floor_tag_56">
       <static>true</static>
-      <pose>-2.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <pose>-3.0000 -3.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -2047,7 +2047,7 @@
     </model>
     <model name="floor_tag_57">
       <static>true</static>
-      <pose>-1.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <pose>-2.0000 -3.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -2077,7 +2077,7 @@
     </model>
     <model name="floor_tag_58">
       <static>true</static>
-      <pose>0.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <pose>-1.0000 -3.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -2107,7 +2107,7 @@
     </model>
     <model name="floor_tag_59">
       <static>true</static>
-      <pose>1.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <pose>0.0000 -3.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -2137,7 +2137,7 @@
     </model>
     <model name="floor_tag_60">
       <static>true</static>
-      <pose>2.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <pose>1.0000 -3.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -2167,7 +2167,7 @@
     </model>
     <model name="floor_tag_61">
       <static>true</static>
-      <pose>3.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <pose>2.0000 -3.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -2197,7 +2197,7 @@
     </model>
     <model name="floor_tag_62">
       <static>true</static>
-      <pose>4.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <pose>3.0000 -3.0000 0.0006 0 0 0.0</pose>
       <link name="link">
         <visual name="visual">
           <geometry>
@@ -2212,6 +2212,276 @@
             <pbr>
               <metal>
                 <albedo_map>model://apriltag/materials/textures/tag36h11-62.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_63">
+      <static>true</static>
+      <pose>4.0000 -3.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-63.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_64">
+      <static>true</static>
+      <pose>-3.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-64.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_65">
+      <static>true</static>
+      <pose>-2.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-65.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_66">
+      <static>true</static>
+      <pose>-1.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-66.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_67">
+      <static>true</static>
+      <pose>0.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-67.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_68">
+      <static>true</static>
+      <pose>1.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-68.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_69">
+      <static>true</static>
+      <pose>2.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-69.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_70">
+      <static>true</static>
+      <pose>3.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-70.png</albedo_map>
+              </metal>
+            </pbr>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.001</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <model name="floor_tag_71">
+      <static>true</static>
+      <pose>4.0000 -4.0000 0.0006 0 0 0.0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>model://apriltag/materials/textures/tag36h11-71.png</albedo_map>
               </metal>
             </pbr>
           </material>
