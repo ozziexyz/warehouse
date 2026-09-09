@@ -116,6 +116,18 @@ def generate_launch_description():
         output='screen',
     )
 
+    ejector_belt_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=[
+            '/model/warehouse_robot/link/cage_floor_link/track_cmd_vel@std_msgs/msg/Float64]gz.msgs.Double',
+        ],
+        remappings=[
+            ('/model/warehouse_robot/link/cage_floor_link/track_cmd_vel', '/cage_ejector/cmd_vel'),
+        ],
+        output='screen',
+    )
+
     robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -274,6 +286,7 @@ def generate_launch_description():
         # gt_base_pub,
         lidar_robot_pub,
         imu_bridge,
+        ejector_belt_bridge,
         robot_state_publisher,
         spawn_robot,
         delayed_joint_state_broadcaster_spawner,

@@ -95,7 +95,6 @@ class SMController : public rclcpp::Node {
         }
  
         double desired_velocity(double distance) {
-            static double last_velocity = 0;
             double v;
             if(distance <= slowdown_distance_ && distance >= 2 * goal_tolerance_) {
                 v = std::max(distance / slowdown_distance_ * max_v_, 0.05);
@@ -104,10 +103,6 @@ class SMController : public rclcpp::Node {
             } else {
                 v = max_v_;
             }
-            if(last_velocity < v && last_velocity > 0) {
-                v = 0;
-            }
-            last_velocity = v;
             return v;
         }
 
@@ -173,7 +168,7 @@ class SMController : public rclcpp::Node {
                 }
             }
             junctions.push_back(waypoints.size() - 1);
-
+            
             rclcpp::Rate loop_rate(10);
 
             while(next_junction < (int)junctions.size()) {
@@ -182,7 +177,6 @@ class SMController : public rclcpp::Node {
                 geometry_msgs::msg::Pose junction = waypoints[junctions[next_junction]].pose;
 
                 double xt_error = xte(prev_junction, junction, robot_pose);
-
                 double dx = junction.position.x - robot_pose.position.x;
                 double dy = junction.position.y - robot_pose.position.y;
                 double d = distance(junction, robot_pose);
