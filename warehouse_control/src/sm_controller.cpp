@@ -95,12 +95,20 @@ class SMController : public rclcpp::Node {
         }
  
         double desired_velocity(double distance) {
+            static double last_velocity = 0;
+            double v;
             if(distance <= slowdown_distance_ && distance >= 2 * goal_tolerance_) {
-                return std::max(distance / slowdown_distance_ * max_v_, 0.05);
+                v = std::max(distance / slowdown_distance_ * max_v_, 0.05);
             } else if(distance <= 2 * goal_tolerance_) {
-                return 0.05;
+                v = 0.05;
+            } else {
+                v = max_v_;
             }
-            return max_v_;
+            if(last_velocity < v && last_velocity > 0) {
+                v = 0;
+            }
+            last_velocity = v;
+            return v;
         }
 
         void tag_callback(const apriltag_msgs::msg::AprilTagDetectionArray msg) {
