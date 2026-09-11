@@ -14,8 +14,6 @@ find_package(geometry_msgs REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "action/FollowPath.action"
   "action/NavigateToPose.action"
-  "msg/RobotState.msg"
-  "srv/SetRobotState.srv"
   "srv/GeneratePath.srv"
   DEPENDENCIES nav_msgs geometry_msgs
 )

@@ -8,12 +8,10 @@
 
 #include <warehouse_interfaces/action/follow_path.hpp>
 #include <warehouse_interfaces/action/navigate_to_pose.hpp>
-#include <warehouse_interfaces/srv/set_robot_state.hpp>
 #include <warehouse_interfaces/srv/generate_path.hpp>
 
 using namespace warehouse_interfaces::action;
 using namespace warehouse_interfaces::srv;
-using namespace warehouse_interfaces::msg;
 using namespace std::chrono_literals;
 
 class NavigationManager : public rclcpp::Node {
@@ -32,25 +30,15 @@ class NavigationManager : public rclcpp::Node {
                 std::bind(&NavigationManager::handle_accepted, this, std::placeholders::_1)
             );
             odom_sub = create_subscription<nav_msgs::msg::Odometry>(
-                "/odometry/filtered", 
+                "/odometry/filtered",
                 10,
                 std::bind(&NavigationManager::odom_callback, this, std::placeholders::_1)
             );
-            state_sub = create_subscription<RobotState>(
-                "/robot_state",
-                10,
-                std::bind(&NavigationManager::state_callback, this, std::placeholders::_1)
-            );
             path_pub = create_publisher<nav_msgs::msg::Path>("/path", 10);
-            robot_state_client = create_client<SetRobotState>("/robot_state/set", 10);
             path_planner_client = create_client<GeneratePath>("/generate_path", 10);
             controller_client = rclcpp_action::create_client<FollowPath>(this, "/follow_path");
             timer = create_timer(0.5s, std::bind(&NavigationManager::timer_callback, this));
 
-            if (!robot_state_client->wait_for_service(1s)) {
-                RCLCPP_ERROR(this->get_logger(), "Robot state service service not available.");
-                return;
-            }
             if (!path_planner_client->wait_for_service(1s)) {
                 RCLCPP_ERROR(this->get_logger(), "Path planner service not available.");
                 return;
@@ -68,7 +56,7 @@ class NavigationManager : public rclcpp::Node {
         ) {
             (void)uuid;
             (void)goal;
-            // if (state.is_moving) {
+            // if (is_moving) {
             //     RCLCPP_WARN(get_logger(), "Rejecting navigation goal, robot is already moving");
             //     return rclcpp_action::GoalResponse::REJECT;
             // }
@@ -100,12 +88,12 @@ class NavigationManager : public rclcpp::Node {
             );
         }
 
-        void state_callback(const RobotState& msg) {
-            state = msg;
+        void set_is_moving(bool moving) {
+            is_moving = moving;
 
             if (current_goal_handle && current_goal_handle->is_executing()) {
                 auto feedback = std::make_shared<NavigateToPose::Feedback>();
-                feedback->is_moving = state.is_moving;
+                feedback->is_moving = is_moving;
                 current_goal_handle->publish_feedback(feedback);
             }
         }
@@ -151,10 +139,7 @@ class NavigationManager : public rclcpp::Node {
             }
             RCLCPP_INFO(get_logger(), "Follow path goal accepted by the controller");
             follow_path_goal_handle = goal_handle;
-
-            auto request = std::make_shared<SetRobotState::Request>();
-            request->state.is_moving = true;
-            auto future = robot_state_client->async_send_request(request);
+            set_is_moving(true);
         }
 
         void follow_path_feedback_callback(
@@ -170,10 +155,7 @@ class NavigationManager : public rclcpp::Node {
 
         void follow_path_result_callback(const rclcpp_action::ClientGoalHandle<FollowPath>::WrappedResult & result) {
             RCLCPP_INFO(get_logger(), "Follow path succeeded: %s", result.result->success ? "true" : "false");
-            SetRobotState::Request request;
-            request.state.is_moving = false;
-            auto req_ptr = std::make_shared<SetRobotState::Request>(request);
-            auto future = robot_state_client->async_send_request(req_ptr);
+            set_is_moving(false);
 
             auto nav_result = std::make_shared<NavigateToPose::Result>();
             switch (result.code) {
@@ -218,18 +200,15 @@ class NavigationManager : public rclcpp::Node {
         }
 
         rclcpp_action::Server<NavigateToPose>::SharedPtr nav_action_server;
-        rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr pose_sub;
         rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub;
-        rclcpp::Subscription<RobotState>::SharedPtr state_sub;
         rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_pub;
         rclcpp_action::Client<warehouse_interfaces::action::FollowPath>::SharedPtr controller_client;
-        rclcpp::Client<SetRobotState>::SharedPtr robot_state_client;
         rclcpp::Client<GeneratePath>::SharedPtr path_planner_client;
         rclcpp::TimerBase::SharedPtr timer;
         std::shared_ptr<GoalHandleNavigateToPose> current_goal_handle;
         rclcpp_action::ClientGoalHandle<FollowPath>::SharedPtr follow_path_goal_handle;
         geometry_msgs::msg::PoseStamped goal_pose;
-        RobotState state;
+        bool is_moving = false;
         nav_msgs::msg::Path path;
         nav_msgs::msg::Odometry odom;
 };

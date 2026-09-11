@@ -19,9 +19,6 @@ find_package(warehouse_interfaces REQUIRED)
 add_executable(navigation_manager src/navigation_manager.cpp)
 ament_target_dependencies(navigation_manager rclcpp rclcpp_action geometry_msgs warehouse_interfaces)
 
-add_executable(state_manager src/state_manager.cpp)
-ament_target_dependencies(state_manager rclcpp warehouse_interfaces)
-
 add_executable(path_planner src/path_planner.cpp)
 ament_target_dependencies(path_planner rclcpp nav_msgs geometry_msgs warehouse_interfaces)
 
@@ -30,7 +27,6 @@ ament_target_dependencies(sm_controller rclcpp rclcpp_action nav_msgs geometry_m
 
 install(TARGETS
   navigation_manager
-  state_manager
   path_planner
   sm_controller
   DESTINATION lib/${PROJECT_NAME}

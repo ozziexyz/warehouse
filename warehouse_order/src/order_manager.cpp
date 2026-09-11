@@ -1,14 +1,10 @@
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp_action/rclcpp_action.hpp>
-#include <warehouse_interfaces/srv/set_robot_state.hpp>
-#include <warehouse_interfaces/msg/robot_state.hpp>
 #include <warehouse_interfaces/action/navigate_to_pose.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <std_msgs/msg/int32.hpp>
 #include <std_msgs/msg/int32_multi_array.hpp>
 
-using namespace warehouse_interfaces::srv;
-using namespace warehouse_interfaces::msg;
 using namespace warehouse_interfaces::action;
 
 class OrderManager : public rclcpp::Node {
@@ -21,11 +17,6 @@ class OrderManager : public rclcpp::Node {
             declare_parameter("spawn_boxes", true);
             spawn_boxes_ = get_parameter("spawn_boxes").as_bool();
 
-            state_sub_ = create_subscription<RobotState>(
-                "/robot_state",
-                10,
-                std::bind(&OrderManager::state_callback, this, std::placeholders::_1)
-            );
             order_sub_ = create_subscription<std_msgs::msg::Int32MultiArray>(
                 "/order",
                 10,
@@ -50,10 +41,6 @@ class OrderManager : public rclcpp::Node {
             }
         }
     private:
-        void state_callback(const RobotState& state) {
-            state_ = state;
-        }
-
         void order_callback(const std_msgs::msg::Int32MultiArray& msg) {
             orders_.push_back(msg.data);
             if(!active_order_) {
@@ -135,12 +122,10 @@ class OrderManager : public rclcpp::Node {
             nav_action_client_->async_send_goal(goal, send_goal_options);
         }
 
-        rclcpp::Subscription<RobotState>::SharedPtr state_sub_;
         rclcpp::Subscription<std_msgs::msg::Int32MultiArray>::SharedPtr order_sub_;
         rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr goal_pub_;
         rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr box_pub_;
         rclcpp_action::Client<NavigateToPose>::SharedPtr nav_action_client_;
-        RobotState state_;
         std::vector<std::vector<int>> orders_;
         std::vector<std::pair<double, double>> locations_;
         int current_order_ = 0;
