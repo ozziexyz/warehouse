@@ -4,7 +4,6 @@
 #include <geometry_msgs/msg/pose_with_covariance_stamped.hpp>
 #include <tf2_ros/buffer.hpp>
 #include <tf2_ros/transform_listener.hpp>
-#include <tf2_ros/transform_broadcaster.hpp>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 #include <tf2/LinearMath/Transform.hpp>
 #include <chrono>
@@ -26,8 +25,6 @@ class AprilTagLocalization : public rclcpp::Node {
             // warehouse.sdf, but apriltag_ros's detected tag frame is defined by the printed
             // pattern instead, which is rotated relative to that box. This correction was
             // found empirically by comparing a detected tag's tf to its configured pose.
-            declare_parameter<double>("tag_frame_correction_roll", M_PI_2);
-            double correction_roll = this->get_parameter("tag_frame_correction_roll").as_double();
             tf2::Quaternion tag_frame_correction;
             tag_frame_correction.setRPY(0.0, 0.0, -M_PI_2);
 
@@ -72,12 +69,6 @@ class AprilTagLocalization : public rclcpp::Node {
             }
         }
 
-        void filtered_transform(geometry_msgs::msg::TransformStamped & tf) {
-            if(tf.transform.translation.z < 0) {
-                tf.transform.translation.z = 0;
-            }
-        }
-
         void detection_callback(const apriltag_msgs::msg::AprilTagDetectionArray& msg) {
             detections = msg;
         }
@@ -114,7 +105,6 @@ class AprilTagLocalization : public rclcpp::Node {
             tf2::fromMsg(tf.transform, base_tag);
             tf2::Transform map_tag = tag_map[id];
             tf2::Transform map_base = map_tag * base_tag.inverse();
-            // filtered_transform(out);
 
             double distance = sqrt(
                 pow(tf.transform.translation.x, 2) + 
@@ -140,7 +130,6 @@ class AprilTagLocalization : public rclcpp::Node {
         rclcpp::Subscription<apriltag_msgs::msg::AprilTagDetectionArray>::SharedPtr detection_sub;
         std::unique_ptr<tf2_ros::Buffer> tf_buffer;
         std::shared_ptr<tf2_ros::TransformListener> tf_listener;
-        std::shared_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster;
         apriltag_msgs::msg::AprilTagDetectionArray detections;
         std::vector<int64_t> tag_ids;
         std::unordered_map<int, tf2::Transform> tag_map;

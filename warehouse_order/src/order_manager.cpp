@@ -22,10 +22,6 @@ class OrderManager : public rclcpp::Node {
                 10,
                 std::bind(&OrderManager::order_callback, this, std::placeholders::_1)
             );
-            goal_pub_ = create_publisher<geometry_msgs::msg::PoseStamped>(
-                "/goal",
-                10
-            );
             box_pub_ = create_publisher<std_msgs::msg::Int32>(
                 "/spawn_box",
                 10
@@ -123,7 +119,6 @@ class OrderManager : public rclcpp::Node {
         }
 
         rclcpp::Subscription<std_msgs::msg::Int32MultiArray>::SharedPtr order_sub_;
-        rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr goal_pub_;
         rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr box_pub_;
         rclcpp_action::Client<NavigateToPose>::SharedPtr nav_action_client_;
         std::vector<std::vector<int>> orders_;
