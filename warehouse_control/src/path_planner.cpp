@@ -157,6 +157,8 @@ class PathPlanner : public rclcpp::Node {
             GraphNode start = world_to_grid(req->start.pose.position);
             GraphNode goal = world_to_grid(req->goal.pose.position);
 
+            RCLCPP_INFO(get_logger(), "start x: %d, start y: %d", start.first, start.second);
+
             if (!grid->in_bounds(start) || !grid->in_bounds(goal)) {
                 RCLCPP_WARN(get_logger(), "Start or goal is outside the planning grid");
                 resp->success = false;

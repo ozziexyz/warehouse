@@ -32,14 +32,9 @@ class NavigationManager : public rclcpp::Node {
                 std::bind(&NavigationManager::handle_accepted, this, std::placeholders::_1)
             );
             odom_sub = create_subscription<nav_msgs::msg::Odometry>(
-                "/diff_drive_controller/odom", 
+                "/odometry/filtered", 
                 10,
                 std::bind(&NavigationManager::odom_callback, this, std::placeholders::_1)
-            );
-            pose_sub = create_subscription<geometry_msgs::msg::PoseStamped> (
-                "/ground_truth/pose",
-                10,
-                std::bind(&NavigationManager::pose_callback, this, std::placeholders::_1)
             );
             state_sub = create_subscription<RobotState>(
                 "/robot_state",
@@ -96,8 +91,7 @@ class NavigationManager : public rclcpp::Node {
 
             auto request = std::make_shared<GeneratePath::Request>();
             request->start.header.frame_id = "/map";
-            // request->start.pose = odom.pose.pose;
-            request->start.pose = gt_pose.pose;
+            request->start.pose = odom.pose.pose;
             request->goal = goal_pose;
 
             path_planner_client->async_send_request(
@@ -114,10 +108,6 @@ class NavigationManager : public rclcpp::Node {
                 feedback->is_moving = state.is_moving;
                 current_goal_handle->publish_feedback(feedback);
             }
-        }
-
-        void pose_callback(const geometry_msgs::msg::PoseStamped & msg) {
-            gt_pose = msg;
         }
 
         void generate_path_response_callback(rclcpp::Client<GeneratePath>::SharedFuture future) {
@@ -239,7 +229,6 @@ class NavigationManager : public rclcpp::Node {
         std::shared_ptr<GoalHandleNavigateToPose> current_goal_handle;
         rclcpp_action::ClientGoalHandle<FollowPath>::SharedPtr follow_path_goal_handle;
         geometry_msgs::msg::PoseStamped goal_pose;
-        geometry_msgs::msg::PoseStamped gt_pose;
         RobotState state;
         nav_msgs::msg::Path path;
         nav_msgs::msg::Odometry odom;
