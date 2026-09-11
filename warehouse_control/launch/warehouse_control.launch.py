@@ -2,7 +2,6 @@ from launch import LaunchDescription
 from launch.actions import RegisterEventHandler
 from launch.event_handlers import OnProcessStart
 from launch_ros.actions import Node
-import math
 
 def generate_launch_description():
     state_manager_node = Node(
@@ -11,22 +10,6 @@ def generate_launch_description():
         name='state_manager',
         output='screen',
     )
-
-    # pure_pursuit_controller_node = Node(
-    #     package='warehouse_control',
-    #     executable='pure_pursuit_controller',
-    #     name='pure_pursuit_controller',
-    #     output='screen',
-    #     parameters=[{
-    #         'lookahead_distance': 0.2,
-    #         'max_linear_velocity': 0.5,
-    #         'goal_tolerance': 0.01,
-    #         'loop_rate': 10.0,
-    #         'turn_in_place_w': 1.5,
-    #         'max_turn': 30 * math.pi / 180,
-    #         'use_ground_truth': True
-    #     }],
-    # )
 
     sm_controller_node = Node(
         package='warehouse_control',
@@ -60,7 +43,7 @@ def generate_launch_description():
         output='screen'
     )
 
-    # pure_pursuit_controller starts once state_manager is running
+    # sm_controller starts once state_manager is running
     start_sm_controller_after_state_manager = RegisterEventHandler(
         OnProcessStart(
             target_action=state_manager_node,
@@ -69,7 +52,7 @@ def generate_launch_description():
     )
 
     # navigation_manager depends on both the robot state service and the
-    # follow_path action server, so it waits until pure_pursuit_controller
+    # follow_path action server, so it waits until sm_controller
     # (which only starts after state_manager) is running
     start_navigation_manager_after_sm = RegisterEventHandler(
         OnProcessStart(
