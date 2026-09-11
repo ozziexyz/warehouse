@@ -18,16 +18,10 @@ using GeneratePath = warehouse_interfaces::srv::GeneratePath;
 
 class AStarGrid {
     public:
-        AStarGrid(int width, int height) : width(width), height(height) {}
+        AStarGrid(int width, int height, std::set<GraphNode> blocked)
+            : width(width), height(height), blocked(std::move(blocked)) {}
 
         std::vector<GraphNode> generate_path(GraphNode start, GraphNode end) {
-            std::set<GraphNode> blocked;
-            for (int col = 0; col <= 4; ++col) {
-                for (int row : {1, 3, 5, 7}) {
-                    blocked.insert({col, row});
-                }
-            }
-
             return astar(start, end, blocked);
         }
 
@@ -103,6 +97,7 @@ class AStarGrid {
 
         int width;
         int height;
+        std::set<GraphNode> blocked;
 };
 
 class PathPlanner : public rclcpp::Node {
@@ -116,6 +111,8 @@ class PathPlanner : public rclcpp::Node {
             declare_parameter<double>("origin_x", -2.0);
             declare_parameter<double>("origin_y", 4.0);
             declare_parameter<double>("waypoint_density", 20.0);
+            declare_parameter<std::vector<int64_t>>("blocked_cells_x", {});
+            declare_parameter<std::vector<int64_t>>("blocked_cells_y", {});
 
             grid_width = get_parameter("grid_width").as_int();
             grid_height = get_parameter("grid_height").as_int();
@@ -124,7 +121,14 @@ class PathPlanner : public rclcpp::Node {
             origin_y = get_parameter("origin_y").as_double();
             waypoint_density = get_parameter("waypoint_density").as_double();
 
-            grid = std::make_unique<AStarGrid>(grid_width, grid_height);
+            auto blocked_cells_x = get_parameter("blocked_cells_x").as_integer_array();
+            auto blocked_cells_y = get_parameter("blocked_cells_y").as_integer_array();
+            std::set<GraphNode> blocked;
+            for (size_t i = 0; i < blocked_cells_x.size() && i < blocked_cells_y.size(); ++i) {
+                blocked.insert({static_cast<int>(blocked_cells_x[i]), static_cast<int>(blocked_cells_y[i])});
+            }
+
+            grid = std::make_unique<AStarGrid>(grid_width, grid_height, std::move(blocked));
 
             generate_path_service = create_service<GeneratePath>(
                 "/generate_path",

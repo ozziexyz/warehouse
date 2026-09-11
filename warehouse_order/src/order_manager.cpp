@@ -41,26 +41,13 @@ class OrderManager : public rclcpp::Node {
             );
             nav_action_client_ = rclcpp_action::create_client<NavigateToPose>(this, "/navigate_to_pose");
 
-            locations_.push_back({-1, 4});
-            locations_.push_back({0, 4});
-            locations_.push_back({1, 4});
-
-            locations_.push_back({-1, 2});
-            locations_.push_back({0, 2});
-            locations_.push_back({1, 2});
-
-            locations_.push_back({-1, 0});
-            locations_.push_back({0, 0});
-            locations_.push_back({1, 0});
-
-            locations_.push_back({-1, -2});
-            locations_.push_back({0, -2});
-            locations_.push_back({1, -2});
-
-            locations_.push_back({-1, -4});
-            locations_.push_back({0, -4});
-            locations_.push_back({1, -4});
-
+            declare_parameter<std::vector<double>>("locations_x", {});
+            declare_parameter<std::vector<double>>("locations_y", {});
+            auto locations_x = get_parameter("locations_x").as_double_array();
+            auto locations_y = get_parameter("locations_y").as_double_array();
+            for (size_t i = 0; i < locations_x.size() && i < locations_y.size(); ++i) {
+                locations_.push_back({locations_x[i], locations_y[i]});
+            }
         }
     private:
         void state_callback(const RobotState& state) {
@@ -132,7 +119,7 @@ class OrderManager : public rclcpp::Node {
             send_nav_goal(locations_[orders_[current_order_][current_item_]]);
         }
 
-        void send_nav_goal(const std::pair<int, int> & location) {
+        void send_nav_goal(const std::pair<double, double> & location) {
             NavigateToPose::Goal goal;
             goal.pose.pose.position.x = location.first;
             goal.pose.pose.position.y = location.second;
@@ -155,7 +142,7 @@ class OrderManager : public rclcpp::Node {
         rclcpp_action::Client<NavigateToPose>::SharedPtr nav_action_client_;
         RobotState state_;
         std::vector<std::vector<int>> orders_;
-        std::vector<std::pair<int, int>> locations_;
+        std::vector<std::pair<double, double>> locations_;
         int current_order_ = 0;
         int current_item_ = 0;
         bool active_order_ = false;

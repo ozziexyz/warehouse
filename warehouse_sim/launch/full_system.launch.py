@@ -43,9 +43,10 @@ def generate_launch_description():
         executable='order_manager',
         name='order_manager',
         output='screen',
-        parameters=[{
-            'spawn_boxes': False
-        }]
+        parameters=[
+            os.path.join(pkg_warehouse_sim, 'config', 'warehouse_layout.yaml'),
+            {'spawn_boxes': False},
+        ],
     )
 
     return LaunchDescription([
