@@ -28,8 +28,8 @@ class OrderManager : public rclcpp::Node {
             );
             nav_action_client_ = rclcpp_action::create_client<NavigateToPose>(this, "/navigate_to_pose");
 
-            declare_parameter<std::vector<double>>("locations_x", {});
-            declare_parameter<std::vector<double>>("locations_y", {});
+            declare_parameter<std::vector<double>>("locations_x", std::vector<double>{});
+            declare_parameter<std::vector<double>>("locations_y", std::vector<double>{});
             auto locations_x = get_parameter("locations_x").as_double_array();
             auto locations_y = get_parameter("locations_y").as_double_array();
             for (size_t i = 0; i < locations_x.size() && i < locations_y.size(); ++i) {
@@ -84,9 +84,9 @@ class OrderManager : public rclcpp::Node {
 
             current_item_++;
 
-            if(current_item_ != orders_[current_order_].size()) {
+            if(current_item_ != static_cast<int>(orders_[current_order_].size())) {
                 send_nav_goal(locations_[orders_[current_order_][current_item_]]);
-            } else if(current_order_ != orders_.size() - 1) {
+            } else if(current_order_ != static_cast<int>(orders_.size()) - 1) {
                 current_order_++;
                 current_item_ = 0;
                 handle_order();

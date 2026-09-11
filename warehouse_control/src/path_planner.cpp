@@ -111,8 +111,8 @@ class PathPlanner : public rclcpp::Node {
             declare_parameter<double>("origin_x", -2.0);
             declare_parameter<double>("origin_y", 4.0);
             declare_parameter<double>("waypoint_density", 20.0);
-            declare_parameter<std::vector<int64_t>>("blocked_cells_x", {});
-            declare_parameter<std::vector<int64_t>>("blocked_cells_y", {});
+            declare_parameter<std::vector<int64_t>>("blocked_cells_x", std::vector<int64_t>{});
+            declare_parameter<std::vector<int64_t>>("blocked_cells_y", std::vector<int64_t>{});
 
             grid_width = get_parameter("grid_width").as_int();
             grid_height = get_parameter("grid_height").as_int();

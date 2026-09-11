@@ -18,7 +18,7 @@ class AprilTagLocalization : public rclcpp::Node {
         AprilTagLocalization() : Node("apriltag_localization") {
             RCLCPP_INFO(get_logger(), "apriltag_localization node started");
 
-            declare_parameter<std::vector<int64_t>>("tag_ids", {});
+            declare_parameter<std::vector<int64_t>>("tag_ids", std::vector<int64_t>{});
             tag_ids = this->get_parameter("tag_ids").as_integer_array();
 
             // The tag poses in tag_*_pose are derived from each tag model's box geometry in
@@ -30,7 +30,7 @@ class AprilTagLocalization : public rclcpp::Node {
 
             for(auto id : tag_ids) {
                 std::string param = "tag_" + std::to_string(id) + "_pose";
-                this->declare_parameter<std::vector<double>>(param, {});
+                this->declare_parameter<std::vector<double>>(param, std::vector<double>{});
                 auto tf_vec = this->get_parameter(param).get_value<std::vector<double>>();
                 tf2::Transform tf;
                 tf2::Vector3 t(tf_vec[0], tf_vec[1], tf_vec[2]);
