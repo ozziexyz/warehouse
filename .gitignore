@@ -2,3 +2,4 @@ __pycache__
 warehouse_sim/models/apriltag/materials/textures/tag*
 frames*.pdf
 frames*.gv
+test

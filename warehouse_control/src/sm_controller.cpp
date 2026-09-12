@@ -83,21 +83,40 @@ class SMController : public rclcpp::Node {
             double path_dx = j2.position.x - j1.position.x;
             double path_dy = j2.position.y - j1.position.y;
             double path_d = hypot(path_dx, path_dy);
-            double robot_atx = r.position.x - j1.position.x;
-            double robot_aty = r.position.y - j1.position.y;
+            double robot_dx = r.position.x - j1.position.x;
+            double robot_dy = r.position.y - j1.position.y;
            
-            double cross = robot_atx * path_dy - robot_aty * path_dx;
+            double cross = robot_dx * path_dy - robot_dy * path_dx;
             if(path_d > 0) {
                 return cross / path_d;
             } else {
                 return 0;
             }
         }
+
+        double ate(geometry_msgs::msg::Pose j1, geometry_msgs::msg::Pose j2, geometry_msgs::msg::Pose r) {
+            double path_dx = j1.position.x - j2.position.x;
+            double path_dy = j1.position.y - j2.position.y;
+            double path_d = hypot(path_dx, path_dy);
+            double robot_dx = r.position.x - j2.position.x;
+            double robot_dy = r.position.y - j2.position.y;
+           
+            double dot = robot_dx * path_dx + robot_dy * path_dy;
+            if(path_d > 0) {
+                return dot / path_d;
+            } else {
+                return 0;
+            }
+        }
  
-        double desired_velocity(double distance) {
-            double v;
-            if(distance <= slowdown_distance_) {
-                v = distance / slowdown_distance_ * max_v_;
+        double desired_velocity(double robot_ate) {
+            double v = 0;
+            if(robot_ate <= 1.5 * goal_tolerance_) {
+                v = goal_tolerance_ / slowdown_distance_ * max_v_;
+            } else if(robot_ate <= slowdown_distance_ && get_num_tags() == 0) {
+                v = abs(robot_ate) / slowdown_distance_ * max_v_;
+            } else if(robot_ate <= slowdown_distance_ && get_num_tags() > 0) {
+                v = goal_tolerance_ / slowdown_distance_ * max_v_;
             } else {
                 v = max_v_;
             }
@@ -178,11 +197,14 @@ class SMController : public rclcpp::Node {
                 geometry_msgs::msg::Pose junction = waypoints[junctions[next_junction]].pose;
 
                 double xt_error = xte(prev_junction, junction, robot_pose);
+                double at_error = ate(prev_junction, junction, robot_pose);
                 double dx = junction.position.x - robot_pose.position.x;
                 double dy = junction.position.y - robot_pose.position.y;
                 double d = distance(junction, robot_pose);
                 double desired_heading = atan2(dy, dx);
                 double heading_error = wrap_angle(desired_heading - yaw_from_quaternion(robot_pose.orientation));
+
+                RCLCPP_INFO(get_logger(), "ATE: %f", at_error);
 
                 geometry_msgs::msg::TwistStamped cmd_vel;
                 cmd_vel.header.stamp = get_clock()->now();
@@ -194,22 +216,26 @@ class SMController : public rclcpp::Node {
                     && (state_ == SMController::State::DRIVE || state_ == SMController::State::DWELL)
                 ){
                     state_ = SMController::State::TURN;
-                    // RCLCPP_INFO(get_logger(), "State: TURN, HE: %f", heading_error);
+                    RCLCPP_INFO(get_logger(), "State: TURN, HE: %f", heading_error);
                 } else if(abs(heading_error) >= min_turn_angle_ && state_ == SMController::State::TURN) {
                     state_ = SMController::State::TURN;
-                    // RCLCPP_INFO(get_logger(), "State: TURN, HE: %f", heading_error);
-                } else if(abs(heading_error) < min_turn_angle_ && state_ == SMController::State::TURN) {
+                    RCLCPP_INFO(get_logger(), "State: TURN, HE: %f", heading_error);
+                } else if((abs(heading_error) < min_turn_angle_ && state_ == SMController::State::TURN)
+                            || xt_error < -1.5 * goal_tolerance_
+                ) {
                     dwell_time = get_clock()->now();
                     state_ = SMController::DWELL;
+                    RCLCPP_INFO(get_logger(), "State: DWELL");
                 } else if(state_ == SMController::State::DWELL && get_num_tags() == 0) {
                     if((get_clock()->now() - dwell_time).seconds() > 10) {
                         dwell_timeout = true;
                         break;
                     }
                     state_ = SMController::State::DWELL;
+                    RCLCPP_INFO(get_logger(), "State: DWELL");
                 } else {
                     state_ = SMController::State::DRIVE;
-                    // RCLCPP_INFO(get_logger(), "State: DRIVE");
+                    RCLCPP_INFO(get_logger(), "State: DRIVE");
                 }
 
                 if(state_ == SMController::State::DRIVE) {
@@ -219,7 +245,7 @@ class SMController : public rclcpp::Node {
                         cmd_vel.twist.angular.z = 0.0;
                         next_junction++;
                     } else {
-                        cmd_vel.twist.linear.x = desired_velocity(d);
+                        cmd_vel.twist.linear.x = desired_velocity(at_error);
                         if(d > no_turn_distance_) cmd_vel.twist.angular.z = heading_error * heading_kp_ + heading_kt_ * xt_error;
                     }
                 } else if(state_ == SMController::State::DWELL) {
