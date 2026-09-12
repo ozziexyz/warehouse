@@ -24,7 +24,7 @@ diff_drive_controller:
     right_wheel_names: ["right_wheel_joint"]
 
     # Distance between the two driven wheel centers and their rolling radius (m)
-    wheel_separation: 0.81
+    wheel_separation: 0.65
     wheel_radius: 0.13
 
     base_frame_id: base_footprint
