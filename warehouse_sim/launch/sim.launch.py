@@ -68,6 +68,7 @@ def generate_launch_description():
         remappings=[
             ('/model/warehouse_robot/pose', '/ground_truth/pose'),
         ],
+        parameters=[{'use_sim_time': True}],
         output='screen',
     )
 

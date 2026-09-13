@@ -26,6 +26,7 @@ def generate_launch_description():
             'min_turn_angle': 0.02,
             'max_v': 0.75,
             'max_w': 1.57,
+            'use_sim_time': True,
         }],
     )
 
@@ -34,6 +35,7 @@ def generate_launch_description():
         executable='navigation_manager',
         name='navigation_manager',
         output='screen',
+        parameters=[{'use_sim_time': True}],
     )
 
     path_planner_node = Node(
@@ -41,7 +43,7 @@ def generate_launch_description():
         executable='path_planner',
         name='path_planner',
         output='screen',
-        parameters=[warehouse_layout_path],
+        parameters=[warehouse_layout_path, {'use_sim_time': True}],
     )
 
     # navigation_manager depends on the follow_path action server, so it
