@@ -125,6 +125,7 @@ class SMController : public rclcpp::Node {
         }
 
         void tag_callback(const apriltag_msgs::msg::AprilTagDetectionArray msg) {
+            std::lock_guard<std::mutex> lock(tag_mtx_);
             num_tags_ = msg.detections.size();
         }
 
@@ -221,7 +222,7 @@ class SMController : public rclcpp::Node {
                     state_ = SMController::State::TURN;
                     RCLCPP_INFO(get_logger(), "State: TURN, HE: %f", heading_error);
                 } else if((abs(heading_error) < min_turn_angle_ && state_ == SMController::State::TURN)
-                            || xt_error < -1.5 * goal_tolerance_
+                            || (at_error < -1.5 * goal_tolerance_ && state_ == SMController::State::DRIVE && get_num_tags() == 0)
                 ) {
                     dwell_time = get_clock()->now();
                     state_ = SMController::DWELL;
@@ -287,7 +288,7 @@ class SMController : public rclcpp::Node {
         std::mutex odom_mtx_;
         std::mutex tag_mtx_;
         SMController::State state_ = State::STOP;
-        int num_tags_;
+        int num_tags_ = 0;
 
         double heading_kp_;
         double heading_kt_;
