@@ -72,18 +72,6 @@ def generate_launch_description():
         output='screen',
     )
 
-    rear_camera_bridge = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        arguments=[
-            '/rear_camera@sensor_msgs/msg/Image@gz.msgs.Image',
-        ],
-        remappings=[
-            ('/rear_camera', '/rear_camera/image_raw'),
-        ],
-        output='screen',
-    )
-
     bottom_camera_bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -281,7 +269,6 @@ def generate_launch_description():
         gt_map_pub,
         pose_to_tf,
         pose_bridge,
-        rear_camera_bridge,
         bottom_camera_bridge,
         front_lidar_bridge,
         # gt_base_pub,
