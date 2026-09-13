@@ -4,7 +4,9 @@
 #include <rclcpp_action/rclcpp_action.hpp>
 #include <warehouse_interfaces/action/follow_path.hpp>
 #include <apriltag_msgs/msg/april_tag_detection_array.hpp>
+#include <atomic>
 #include <mutex>
+#include <thread>
 
 using namespace warehouse_interfaces::action;
 using GoalHandleFollowPath = rclcpp_action::ServerGoalHandle<FollowPath>;
@@ -61,6 +63,12 @@ class SMController : public rclcpp::Node {
             );
             
             cmd_vel_pub_ = create_publisher<geometry_msgs::msg::TwistStamped>("/diff_drive_controller/cmd_vel", 10);
+        }
+
+        ~SMController() {
+            if (execution_thread_.joinable()) {
+                execution_thread_.join();
+            }
         }
     private:
         double yaw_from_quaternion(geometry_msgs::msg::Quaternion q) {
@@ -150,6 +158,10 @@ class SMController : public rclcpp::Node {
             if (goal->path.poses.empty()) {
                 return rclcpp_action::GoalResponse::REJECT;
             }
+            if (executing_) {
+                RCLCPP_WARN(get_logger(), "Rejecting goal, already executing a path");
+                return rclcpp_action::GoalResponse::REJECT;
+            }
             return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
         }
 
@@ -160,7 +172,11 @@ class SMController : public rclcpp::Node {
         }
 
         void handle_accepted(const std::shared_ptr<GoalHandleFollowPath> goal_handle) {
-            std::thread{std::bind(&SMController::execute, this, std::placeholders::_1), goal_handle}.detach();
+            if (execution_thread_.joinable()) {
+                execution_thread_.join();
+            }
+            executing_ = true;
+            execution_thread_ = std::thread(std::bind(&SMController::execute, this, std::placeholders::_1), goal_handle);
         }
 
         void execute(const std::shared_ptr<GoalHandleFollowPath> goal_handle) {
@@ -193,6 +209,20 @@ class SMController : public rclcpp::Node {
             rclcpp::Rate loop_rate(10);
 
             while(next_junction < (int)junctions.size()) {
+                if (!rclcpp::ok()) {
+                    executing_ = false;
+                    return;
+                }
+
+                if (goal_handle->is_canceling()) {
+                    cmd_vel_pub_->publish(geometry_msgs::msg::TwistStamped());
+                    result->success = false;
+                    goal_handle->canceled(result);
+                    RCLCPP_INFO(get_logger(), "Goal canceled");
+                    executing_ = false;
+                    return;
+                }
+
                 geometry_msgs::msg::Pose robot_pose = get_odom()->pose.pose;
                 geometry_msgs::msg::Pose prev_junction = waypoints[junctions[next_junction-1]].pose;
                 geometry_msgs::msg::Pose junction = waypoints[junctions[next_junction]].pose;
@@ -271,6 +301,7 @@ class SMController : public rclcpp::Node {
                 goal_handle->succeed(result);
                 RCLCPP_INFO(get_logger(), "Goal failed: dwell timeout");
             }
+            executing_ = false;
         }
 
         enum State {
@@ -287,6 +318,8 @@ class SMController : public rclcpp::Node {
         nav_msgs::msg::Odometry::SharedPtr odom_;
         std::mutex odom_mtx_;
         std::mutex tag_mtx_;
+        std::thread execution_thread_;
+        std::atomic<bool> executing_{false};
         SMController::State state_ = State::STOP;
         int num_tags_ = 0;
 
