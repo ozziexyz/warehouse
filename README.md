@@ -1,6 +1,8 @@
 # Warehouse
 
 A simulated warehouse environment where a fully autonomous robot receives orders, drives to each item's location, and receives it. 
+| ![Image 1](docs/images/path.png) | ![Image 2](docs/images/rviz.png) |
+|:---:|:---:|
 
 ## Installation
 ### 1. Install system dependencies
