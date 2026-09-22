@@ -24,7 +24,7 @@ def generate_launch_description():
     camera_info_publisher = Node(
         package='warehouse_perception',
         executable='static_camerainfo_publisher',
-        name='rear_camerainfo_publisher',
+        name='static_camerainfo_publisher',
         remappings=[
             ('image_raw', [camera_topic, '/image_raw']),
             ('camera_info', [camera_topic, '/camera_info'])

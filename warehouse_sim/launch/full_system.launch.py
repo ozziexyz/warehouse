@@ -45,7 +45,7 @@ def generate_launch_description():
         output='screen',
         parameters=[
             os.path.join(pkg_warehouse_sim, 'config', 'warehouse_layout.yaml'),
-            {'spawn_boxes': False},
+            {'spawn_boxes': False, 'use_sim_time': True},
         ],
     )
 

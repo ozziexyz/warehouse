@@ -126,15 +126,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        rear_camera_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rear_camera_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         right_wall_link:
           Alpha: 1
           Show Axes: false

@@ -1,3 +1,5 @@
+#include <chrono>
+
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp_action/rclcpp_action.hpp>
 #include <warehouse_interfaces/action/navigate_to_pose.hpp>
@@ -6,6 +8,7 @@
 #include <std_msgs/msg/int32_multi_array.hpp>
 
 using namespace warehouse_interfaces::action;
+using namespace std::chrono_literals;
 
 class OrderManager : public rclcpp::Node {
     public:
@@ -75,13 +78,21 @@ class OrderManager : public rclcpp::Node {
             }
 
             if(spawn_boxes_) {
-                rclcpp::Rate rate(0.5);
                 std_msgs::msg::Int32 box_msg;
                 box_msg.data = orders_[current_order_][current_item_];
                 box_pub_->publish(box_msg);
-                rate.sleep();
+                box_spawn_timer_ = create_wall_timer(2s, std::bind(&OrderManager::on_box_spawn_timer, this));
+            } else {
+                advance_order();
             }
+        }
 
+        void on_box_spawn_timer() {
+            box_spawn_timer_->cancel();
+            advance_order();
+        }
+
+        void advance_order() {
             current_item_++;
 
             if(current_item_ != static_cast<int>(orders_[current_order_].size())) {
@@ -121,6 +132,7 @@ class OrderManager : public rclcpp::Node {
         rclcpp::Subscription<std_msgs::msg::Int32MultiArray>::SharedPtr order_sub_;
         rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr box_pub_;
         rclcpp_action::Client<NavigateToPose>::SharedPtr nav_action_client_;
+        rclcpp::TimerBase::SharedPtr box_spawn_timer_;
         std::vector<std::vector<int>> orders_;
         std::vector<std::pair<double, double>> locations_;
         int current_order_ = 0;
