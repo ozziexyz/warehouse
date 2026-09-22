@@ -39,6 +39,14 @@ source install/setup.bash
 ```
 Run this command in every terminal you plan to use with the project. Alternatively, you can add it to your `.bashrc`.
 
+### 7. Generate the AprilTag floor grid
+Before first launch, generate the AprilTag models the localization stack relies on. This writes the tag models directly into `warehouse_sim/worlds/warehouse.sdf` and generates any missing `tag36h11-*.png` textures under `warehouse_sim/models/apriltag/materials/textures`.
+```bash
+pip install opencv-python
+src/warehouse/warehouse_sim/scripts/generate_apriltag_grid.py
+```
+You only need to re-run this if you change the grid parameters (grid size, resolution, origin, tag size, etc.). Pass `--help` to see all options. It's safe to re-run at any time because it replaces the previously generated block in place instead of duplicating it.
+
 ## Quickstart
 Once you have the workspace sourced, launch the full simulation:
 ```bash
@@ -49,7 +57,7 @@ Then, publish a test order:
 ros2 topic pub /order std_msgs/msg/Int32MultiArray "{data: [3, 7, 11]}"
 ```
 Send as many orders as you want! The `order_manager` will queue them until the current order is fulfilled.
-## Overview
+## Design
 ### Goal
 Simulate a robot that moves autonomously through a small mock-warehouse environment to receive boxes. The robot can only use simulated sensors to navigate, and does not know its own true position or velocity. Upon retrieving all the items in an order, the robot unloads the contents into a truck bed and queues the next order* (WIP).
 
