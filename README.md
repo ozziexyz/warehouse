@@ -39,6 +39,16 @@ source install/setup.bash
 ```
 Run this command in every terminal you plan to use with the project. Alternatively, you can add it to your `.bashrc`.
 
+## Quickstart
+Once you have the workspace sourced, launch the full simulation:
+```bash
+ros2 launch warehouse_sim full_system.launch.py
+```
+Then, publish a test order:
+```bash
+ros2 topic pub /order std_msgs/msg/Int32MultiArray "{data: [3, 7, 11]}"
+```
+Send as many orders as you want! The `order_manager` will queue them until the current order is fulfilled.
 ## Overview
 ### Goal
 Simulate a robot that moves autonomously through a small mock-warehouse environment to receive boxes. The robot can only use simulated sensors to navigate, and does not know its own true position or velocity. Upon retrieving all the items in an order, the robot unloads the contents into a truck bed and queues the next order* (WIP).
